@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=67.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rudi-node-write"
+version = "0.0.1"
+authors = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
+maintainers = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
+description = "Use the internal API of a RUDI Producer node"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "EUPL-1.2" }
+classifiers = ["Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+]
+keywords = ["rudi-node-write", "rudi-node-get", "RUDI", "producer node", "RUDI node", "open-data", "Univ. Rennes"]
+
+[project.urls]
+Homepage = "https://github.com/OlivierMartineau/rudi-node-write"
+Documentation = "https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-InternalAPI"
+Changelog = "https://github.com/OlivierMartineau/rudi-node-write/blob/release/CHANGELOG.md"
+Repository = "https://github.com/OlivierMartineau/rudi-node-write"
+
+[project.optional-dependencies]
+packaging = ["build", "twine", "pip-chill", "pip-autoremove"]
+tests = ["pytest-cov"]
+
+[tool.pytest.ini_options]
+norecursedirs = ["*.egg", ".eggs", "dist", "build"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rudi_node_write*"]
+
