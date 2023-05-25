@@ -1,4 +1,3 @@
-from datetime import datetime
 from time import time
 
 from rudi_node_write.utils.date import now
@@ -25,6 +24,10 @@ def log_e(*args):
     log('E', *args)
 
 
+def log_w(*args):
+    log('W', *args)
+
+
 def log_d(*args):
     log('D', *args)
 
@@ -38,6 +41,7 @@ def decorator_timer(some_function):
     def _wrap(*args, **kwargs):
         multiplier = 1
         begin = time()
+        result = None
         for count in range(multiplier):
             result = some_function(*args, **kwargs)
         duration = (time() - begin) / multiplier

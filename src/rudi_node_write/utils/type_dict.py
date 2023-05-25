@@ -17,6 +17,7 @@ def check_is_dict(obj):
         raise TypeError(f"input argument should be a Python 'dict'. Got: '{get_type_name(obj)}'")
     return obj
 
+
 def has_key(obj: dict, key_name: str) -> bool:
     """
     :param obj: an object
@@ -143,3 +144,7 @@ def find_in_dict_list(searched_list: list, search_filter: dict):
         if is_element_matching_filter(element, search_filter):
             return element
     return None
+
+
+def merge_dict_of_list(dict1: dict, dict2: dict):
+    return {key: dict1.get(key, []) + dict2.get(key, []) for key in set(list(dict1.keys()) + list(dict2.keys()))}

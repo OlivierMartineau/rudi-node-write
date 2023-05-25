@@ -1,6 +1,5 @@
 from math import ceil
 from time import time
-from typing import get_args
 
 from rudi_node_write.utils.jwt import get_jwt_exp
 from rudi_node_write.utils.type_string import slash_join
@@ -38,7 +37,7 @@ class UnexpectedValueException(Exception):
 
 
 class LiteralUnexpectedValueException(Exception):
-    def __init__(self, received_val, expected_literal, err_msg):
+    def __init__(self, received_val, expected_literal: tuple, err_msg):
         super().__init__(f"{err_msg}. Expected {expected_literal}, got '{received_val}'")
 
 

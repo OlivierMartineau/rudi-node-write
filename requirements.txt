@@ -1,6 +1,8 @@
+chardet==5.1.0
 pip-autoremove==0.10.0
 pip-chill==1.0.3
-pytest-cov==4.0.0
+puremagic==1.15
+pytest-cov==4.1.0
 # coverage==7.2.5 # Installed as dependency for pytest-cov
 # iniconfig==2.0.0 # Installed as dependency for pytest
 # packaging==23.1 # Installed as dependency for pytest
