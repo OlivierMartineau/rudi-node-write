@@ -1,6 +1,6 @@
 from http.client import HTTPSConnection, HTTPConnection
 from json import dumps, loads, JSONDecodeError
-from typing import Literal, get_args
+from typing import Literal, get_args, BinaryIO, TextIO
 from urllib.parse import urlsplit
 
 from rudi_node_write.rudi_types.rudi_const import check_is_accepted
@@ -65,8 +65,9 @@ class Connector:
         except Exception as e:
             log_e(self.__class__.__name__, 'close_connection ERROR', e)
 
-    def request(self, relative_url: str = '/', req_method: HttpRequestMethod = 'GET', body: dict | str = None,
-                headers: dict = None, keep_alive: bool = False, should_log_response: bool = False) -> (str, dict):
+    def request(self, relative_url: str = '/', req_method: HttpRequestMethod = 'GET',
+                body: dict | str | BinaryIO | TextIO = None, headers: dict = None, keep_alive: bool = False,
+                should_log_response: bool = False) -> (str, dict):
         """
         Send a http(s) request
         :param relative_url: a relative URL that will be joined to the connector's base URL to form the request URL
@@ -85,7 +86,7 @@ class Connector:
         check_is_accepted(req_method, HTTP_REQUEST_METHODS, 'incorrect type for request method')
 
         if not headers:
-            headers = {'Content-Type': 'text/plain', 'Accept': 'application/json'}
+            headers = {'Content-Type': 'text/plain; ', 'Accept': 'application/json'}
         if body and type(body) == dict:
             headers['Content-type'] = 'application/json'
             body = dumps(body)
@@ -99,8 +100,8 @@ class Connector:
             log_e(fun, 'Error on request', req_method, self.full_url(relative_url))
             log_e(fun, 'ERR', e)
             raise e
-        return self.parse_response(relative_url=relative_url, req_method=req_method,
-                                   keep_alive=keep_alive, should_log_response=should_log_response)
+        return self.parse_response(relative_url=relative_url, req_method=req_method, keep_alive=keep_alive,
+                                   should_log_response=should_log_response)
 
     def parse_response(self, relative_url, req_method, keep_alive: bool = False,
                        should_log_response: bool = True):

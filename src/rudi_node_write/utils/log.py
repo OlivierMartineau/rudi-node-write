@@ -39,12 +39,13 @@ def log_d_if(should_print: bool, *args):
 
 def decorator_timer(some_function):
     def _wrap(*args, **kwargs):
-        multiplier = 1
+        multiplier = 50
         begin = time()
         result = None
         for count in range(multiplier):
             result = some_function(*args, **kwargs)
         duration = (time() - begin) / multiplier
+        log_d(some_function.__name__, 'duration',duration)
         return result, duration
 
     return _wrap

@@ -1,14 +1,24 @@
 from abc import ABC
 from json import dumps
 from time import time
+from typing import BinaryIO, TextIO
 from urllib.parse import quote
 
 from rudi_node_write.io_connectors.io_connector import Connector
-from rudi_node_write.rudi_types.rudi_const import MEDIA_TYPE_FILE
-from rudi_node_write.utils.file import get_file_info, ensure_is_file, read_file
+from rudi_node_write.rudi_types.rudi_const import MEDIA_TYPE_FILE, MIME_TYPES_UTF8_TEXT
+from rudi_node_write.utils.file import read_file, FileDetails
 from rudi_node_write.utils.jwt import get_jwt_basic_auth
-from rudi_node_write.utils.log import log_d
+from rudi_node_write.utils.log import log_d, log_w
 from rudi_node_write.utils.type_string import slash_join
+
+MAX_SIZE = 524288000  # (== 500 MB)
+
+
+class FileTooBigException(Exception):
+    def __init__(self, file_size):
+        super().__init__(
+            f'This file is too big to be uploaded to a RUDI node ('
+            f'file size = {int(file_size / 1048576)} MB > max size = {int(MAX_SIZE / 1048576)} MB)')
 
 
 class RudiMediaHeadersFactory(ABC):
@@ -20,39 +30,46 @@ class RudiMediaHeadersFactory(ABC):
     def __init__(self, headers_user_agent: str = 'RudiMediaHeadersFactory'):
         self._initial_headers = {
             'User-Agent': headers_user_agent,
-            'Content-type': 'text/plain',
-            'Accept': 'application/json'}
+            'Content-type': 'text/plain; charset=utf-8'}
 
     def get_headers(self, additional_headers: dict = None):
         return self._initial_headers if additional_headers is None else self._initial_headers | additional_headers
 
-    def get_headers_for_file(self, file_local_path: str, media_id: str):
+    def get_headers_for_file(self, file_info: FileDetails, media_id: str):
         """
         Metadata for RUDI "MediaFiles" {"media_type": "FILE"}
         source: https://gitlab.aqmo.org/rudidev/rudi-media
 
         "media_id": (mandatory) An uuid-v4 unique identifier
         "media_type": (optional) should specify "FILE", as defined in the standard specification
-        "media_name": (optional) the name of the media. This name can be used to give a name for the file when downloaded
+        "media_name": (optional) the name of the media. This name can be used to give a name for the file when
+        downloaded
         "file_size": (optional) the file size. This value, when correctly used, will improve the transfer speed.
         "file_type": (optional), the mime-type as registered by the IANA authority
         "charset":   (optional), the data encoding format as registered by the IANA authority
         "access_date": (optional), a date after the access is invalid (in the future)
         """
-        ensure_is_file(file_local_path)
-        file_info = get_file_info(file_local_path)
+
         file_metadata = {
             'media_id': media_id,
             'media_type': MEDIA_TYPE_FILE,
-            'media_name': quote(file_info.get('name')),
-            'file_size': file_info.get('size'),
-            'file_type': quote(file_info.get('mime_type'))
+            'media_name': quote(file_info.name),
+            'file_size': file_info.size,
+            'file_type': file_info.mime
         }
-        charset = file_info.get('charset')
-        if charset:
-            file_metadata['charset'] = charset
+        if file_info.mime.endswith('+crypt'):
+            return self.get_headers({'Content-type': f'{file_info.mime}', 'file_metadata': dumps(file_metadata)})
 
-        return self.get_headers({'file_metadata': dumps(file_metadata)})
+        if file_info.mime.startswith('text'):
+            charset = file_info.charset if file_info.charset else 'utf-8'
+            file_metadata['charset'] = charset
+            return self.get_headers({'Content-type': f'{file_info.mime}; charset={charset}',
+                                     'file_metadata': dumps(file_metadata)})
+        if file_info.mime in MIME_TYPES_UTF8_TEXT:
+            file_metadata['charset'] = 'utf-8'
+
+        return self.get_headers({'Content-type': f'{file_info.mime}; charset=utf-8',
+                                 'file_metadata': dumps(file_metadata)})
 
 
 class RudiMediaHeadersFactoryBasicAuth(RudiMediaHeadersFactory):
@@ -75,16 +92,25 @@ class RudiNodeMediaConnector(Connector):
     def _get_headers(self, additional_headers: dict = None) -> dict:
         return self._headers_factory.get_headers(additional_headers)
 
-    def _get_headers_for_file(self, file_local_path: str, media_id: str) -> dict:
-        return self._headers_factory.get_headers_for_file(file_local_path=file_local_path, media_id=media_id)
+    def _get_headers_for_file(self, file_info: FileDetails, media_id: str) -> dict:
+        return self._headers_factory.get_headers_for_file(file_info=file_info, media_id=media_id)
 
     def _get_api_media(self, relative_url: str):
-        return self.request(relative_url=slash_join('media', relative_url), headers=self._get_headers(),
+        return self.request(relative_url=slash_join('media', relative_url),
+                            headers=self._get_headers(),
                             req_method='GET')
 
-    def _put_api_media(self, relative_url: str, payload: dict):
-        return self.request(relative_url=slash_join('media', relative_url), headers=self._get_headers(),
-                            req_method='PUT', body=payload)
+    def _post_api_media(self, relative_url: str, payload: str | dict | BinaryIO | TextIO, headers: dict = None):
+        headers = headers if headers is not None else self._get_headers()
+        return self.request(relative_url=slash_join('media', relative_url),
+                            headers=headers, body=payload,
+                            req_method='POST')
+
+    def _put_api_media(self, relative_url: str, payload: str | dict | BinaryIO, headers: dict = None):
+        headers = headers if headers is not None else self._get_headers()
+        return self.request(relative_url=slash_join('media', relative_url),
+                            headers=headers, body=payload,
+                            req_method='PUT')
 
     def test_connection(self) -> bool:
         test = bool(self._get_api_media(relative_url='revision'))
@@ -106,12 +132,23 @@ class RudiNodeMediaConnector(Connector):
         # :param file_size: the size of the file in bytes
         # :param file_type: the MIME type of the file
         # :param charset: the encoding of the file
-        headers = self._get_headers_for_file(file_local_path, media_id)
+        here = 'put_local_media_file'
 
-        # 1. créer un objet headers avec la Media headers factory
-        # 2. ajouter les infos du fichier au header : au niveau du headers on urlib.parse.quote les champs nécessaires
-        # 3.
-        return
+        file_info = FileDetails(file_local_path)
+        if file_info.size > MAX_SIZE:
+            raise FileTooBigException(file_info.size)
+
+        log_d(here, 'sending as binary')
+        headers = self._get_headers_for_file(file_info, media_id)
+        # log_d(here, 'headers', headers)
+        with open(file_local_path, f'rb') as bin_content:
+            res = self._post_api_media('post', bin_content, headers)
+        if {'status': 'OK'} in res:
+            log_d(here, 'upload status', 'success')
+            return slash_join(self.base_url, 'media/download', media_id)
+        if len(res) > 0 and res[0].get('status') == 'error':
+            log_w(here, 'ERR upload failed', res[0].get('msg'))
+            return res[0]
 
 
 if __name__ == '__main__':
@@ -121,8 +158,19 @@ if __name__ == '__main__':
 
     creds_file = '../../../creds/creds.json'
     rudi_node_creds = read_file(creds_file)
-    headers = RudiMediaHeadersFactoryBasicAuth(usr=rudi_node_creds.get('usr'), pwd=rudi_node_creds.get('pwd'))
+    media_headers_factory = RudiMediaHeadersFactoryBasicAuth(usr=rudi_node_creds['usr'], pwd=rudi_node_creds['pwd'])
     rudi_media = RudiNodeMediaConnector(server_url='https://bacasable.fenix.rudi-univ-rennes1.fr',
-                                        headers_factory=headers)
+                                        headers_factory=media_headers_factory)
     log_d(fun, 'media list', rudi_media.media_list)
+
+    dwnld_dir = '../../../dwnld/'
+    media_uuid = ['eeeeeeee-3233-4541-855e-55de7086b40b', 'eeeeeeee-3233-4541-855e-55de7086b40c']
+    text_file = 'toto.txt'
+    yaml_file = 'RUDI producer internal API.yml'
+    for i, f in enumerate([text_file, yaml_file]):
+        upload_res = rudi_media.post_local_media_file(dwnld_dir + f, media_uuid[i])
+        log_d(fun, f"File now '{f}' available at", upload_res)
+        log_d(fun, 'stored_media',
+              [stored_media for stored_media in rudi_media.media_list if stored_media.get('uuid') == media_uuid[i]][0])
+
     log_d(fun, 'exec. time', time() - begin)

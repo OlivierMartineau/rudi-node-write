@@ -8,7 +8,9 @@ from typing import Literal
 from chardet import detect
 from puremagic import magic_file
 
-from rudi_node_write.utils.log import log_d
+from rudi_node_write.rudi_types.rudi_const import FileExtensions
+from rudi_node_write.utils.log import log_d, decorator_timer
+from rudi_node_write.utils.serializable import Serializable
 
 
 def exists_file(file_local_path: str):
@@ -33,13 +35,18 @@ def get_file_size(file_local_path: str):
     return stat(file_local_path).st_size
 
 
+# @decorator_timer
 def get_file_extension(file_local_path: str):
     """
     Returns a file size in bytes
     :param file_local_path:
     :return:
     """
-    return ''.join(Path(file_local_path).suffixes)
+    ext = ''.join(Path(file_local_path).suffixes)
+    if FileExtensions.get(ext):
+        return ext
+    recognized_ext = [key for key in FileExtensions.keys() if ext.endswith(key)]
+    return recognized_ext if len(recognized_ext) else ext
 
 
 def get_file_mime(file_local_path: str) -> str:
@@ -77,23 +84,8 @@ def get_file_charset(file_local_path):
         return charset
 
 
-def get_file_info(file_local_path: str):
-    """
-    Returns the file information: size, extension, MIME type
-    (Uses the library 'puremagic': https://pypi.org/project/puremagic)
-    (Uses the library 'chardet': https://pypi.org/project/chardet)
-    :param file_local_path: the path of a local file
-    :return: the name, the extension, the MIME type, the size and the encoding of a file
-    """
-    return {'name': Path(file_local_path).name,
-            'extension': get_file_extension(file_local_path),
-            'mime_type': get_file_mime(file_local_path),
-            'size': get_file_size(file_local_path),
-            'charset': get_file_charset(file_local_path)}
-
-
-def read_file(file_path):
-    with open(file_path, 'r') as file_content:
+def read_file(file_path, mode: Literal['b', 't'] = 't'):
+    with open(file_path, f'r{mode}') as file_content:
         content = load(file_content)
     return content
 
@@ -108,6 +100,20 @@ def write_file(destination_file_path: str, content, mode: Literal['b', 't'] = 't
     """
     with open(destination_file_path, f'w{mode}') as file:
         file.write(content)
+
+
+class FileDetails(Serializable):
+    def __init__(self, file_local_path: str):
+        ensure_is_file(file_local_path)
+        self.path: str = file_local_path
+        self.name: str = Path(file_local_path).name
+        self.extension: str = get_file_extension(file_local_path)
+        self.mime: str = get_file_mime(file_local_path)
+        self.charset: str | None = get_file_charset(self.path) if self.mime.startswith('text') else None
+        self.size: int = get_file_size(file_local_path)
+
+    def from_dict(self):
+        raise NotImplementedError()
 
 
 if __name__ == '__main__':
@@ -133,12 +139,12 @@ if __name__ == '__main__':
     log_d(fun, 'file extension', get_file_extension('.bashrc'))
     log_d(fun, 'file mime', get_file_mime(right_path))
     log_d(fun, 'file charset', get_file_charset(yaml_file_path))
-    log_d(fun, 'file info', get_file_info(right_path))
-    log_d(fun, 'file info', get_file_info(yaml_file_path))
-    log_d(fun, 'file info', get_file_info(bin_file))
-    log_d(fun, 'file info', get_file_info(tar_gz_file))
-    log_d(fun, 'file info', get_file_info(txt_file))
+    log_d(fun, 'file info', FileDetails(right_path))
+    log_d(fun, 'file info', FileDetails(yaml_file_path))
+    log_d(fun, 'file info', FileDetails(bin_file))
+    log_d(fun, 'file info', FileDetails(tar_gz_file))
+    log_d(fun, 'file info', FileDetails(txt_file))
     # log_d(fun, 'file info', get_file_info(wrong_path))
-    write_file(test_file_dir + 'toto', 'tut0156')
+    write_file(test_file_dir + 'toto.txt', 'tut0156êµîƒﬁÌπÏ“{ëôøÇ¡¶{µœ≤é≤')
 
     log_d(fun, 'exec. time', time() - begin)
