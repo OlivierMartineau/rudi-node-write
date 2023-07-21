@@ -1,15 +1,35 @@
-# Context
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-We have a data source, e.g. OpenDataSoft-powered or GeoServer-powered open data server.
-And we have a RUDI node, that acts as an open-source server as well, but also feeds the RUDI portal.
+Caution: this librairy is still a work in progress.
 
-This library makes it possible to
+# RUDI Node tools: _rudi-node-write_ library
 
-- access the data source (see [io_data_source.py](src%2Frudi_node_write%2Fio_connectors%2Fio_data_source.py))
-- extract the metadata from the Data
-  source ([metadata_factory.py](src%2Frudi_node_write%2Fconversion%2Fmetadata_factory.py))
-- normalize them as a SourceMetadata [source_meta.py](src%2Frudi_node_write%2Fsrc_types%2Fsource_meta.py)
-- connect to the RudiNode ([io_rudi_api_write.py](src%2Frudi_node_write%2Fio_connectors%2Fio_rudi_api_write.py))
-- verify that the RudiMetadata is online, upload it otherwise ([metadata_factory.py](src%2Frudi_node_write%2Fconversion%2Fmetadata_factory.py))
-- update the RudiMetadata if needed ([metadata_factory.py](src%2Frudi_node_write%2Fconversion%2Fmetadata_factory.py))
-- update the associated Media if needed ([io_rudi_media_write.py](src%2Frudi_node_write%2Fio_connectors%2Fio_rudi_media_write.py))
+This library offers tools to take advantage of
+the [internal API](https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-InternalAPI) of a RUDI Producer node (
+also
+referred as RUDI node).
+
+## Installation
+
+```bash
+$ pip install rudi_node_write
+```
+
+## Usage
+
+```python
+from rudi_node_write.connectors.io_rudi_api_write import RudiNodeApiConnector
+
+rudi_api = RudiNodeApiConnector('https://bacasable.fenix.rudi-univ-rennes1.fr')
+print(rudi_api.metadata_count)
+print(len(rudi_api.metadata_list))
+print(rudi_api.producer_names)
+print(rudi_api.find_metadata_with_media_name('toucan.jpg'))
+
+```
+
+## Testing
+
+```bash
+$ pytest
+```
