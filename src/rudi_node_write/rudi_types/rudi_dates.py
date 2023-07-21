@@ -1,44 +1,58 @@
-from rudi_node_write.utils.date import nowISO, ensure_date_str
+from builtins import staticmethod
+
+from rudi_node_write.rudi_types.serializable import Serializable
+from rudi_node_write.utils.date_utils import now_iso
+from rudi_node_write.utils.dict_utils import check_is_dict
 from rudi_node_write.utils.log import log_d
-from rudi_node_write.utils.serializable import Serializable
-from rudi_node_write.utils.type_dict import check_is_dict
+from rudi_node_write.utils.type_date import Date
 
 
 class RudiDates(Serializable):
-    def __init__(self, created: str = None, updated: str = None, validated: str = None, published: str = None,
-                 expires: str = None, deleted: str = None):
-        self.created = ensure_date_str(created, ensure_date_str(updated, nowISO()))
-        self.updated = ensure_date_str(updated, self.created)
+    def __init__(
+        self,
+        created: str = None,
+        updated: str = None,
+        validated: str = None,
+        published: str = None,
+        expires: str = None,
+        deleted: str = None,
+    ):
+        self.created = Date.from_str(created, now_iso())
+        self.updated = Date.from_str(updated, now_iso())
         if self.created > self.updated:
-            self.created = self.updated
-        self.validated = ensure_date_str(validated)
-        self.published = ensure_date_str(published)
-        self.expires = ensure_date_str(expires)
-        self.deleted = ensure_date_str(deleted)
+            upd = self.updated
+            self.updated = self.created
+            self.created = upd
+        self.validated = Date.from_str(validated)
+        self.published = Date.from_str(published)
+        self.expires = Date.from_str(expires)
+        self.deleted = Date.from_str(deleted)
 
     @staticmethod
-    def from_dict(o: dict):
+    def from_json(o: dict | None):
         if o is None:
             return RudiDates()
         check_is_dict(o)
-        updated = o.get('updated')
-        created_iso = ensure_date_str(o.get('created'), ensure_date_str(updated, nowISO()))
-        updated_iso = ensure_date_str(updated, created_iso)
-        if created_iso > updated_iso:
-            created_iso = updated_iso
-        validated_iso = ensure_date_str(o.get('validated'), None, True)
-        published_iso = ensure_date_str(o.get('published'), None, True)
-        expires_iso = ensure_date_str(o.get('expires'), None, True)
-        deleted_iso = ensure_date_str(o.get('deleted'), None, True)
-        return RudiDates(created=created_iso, updated=updated_iso, validated=validated_iso, published=published_iso,
-                         expires=expires_iso, deleted=deleted_iso)
+        return RudiDates(
+            created=o.get("created"),
+            updated=o.get("updated"),
+            validated=o.get("validated"),
+            published=o.get("published"),
+            expires=o.get("expires"),
+            deleted=o.get("deleted"),
+        )
 
 
-if __name__ == '__main__':
-    fun = 'RudiDates tests'
-    log_d(fun, 'empty', RudiDates())
-    default_rudi_dates = RudiDates(updated='2023-02-10T14:32:06+02:00')
-    log_d(fun, 'created', default_rudi_dates.created)
-    log_d(fun, 'is validated None', default_rudi_dates.validated is None)
-    log_d(fun, 'default_rudi_dates', default_rudi_dates)
-    log_d(fun, 'RudiDates.from_json', RudiDates.from_dict(default_rudi_dates.to_json_dict()))
+if __name__ == "__main__":  # pragma: no cover
+    tests = "RudiDates tests"
+    log_d(tests, "empty", RudiDates())
+    default_rudi_dates = RudiDates(updated="2023-02-10T14:32:06+02:00")
+    log_d(tests, "created", default_rudi_dates.created)
+    log_d(tests, "is validated None", default_rudi_dates.validated is None)
+    log_d(tests, "default_rudi_dates", default_rudi_dates)
+    log_d(tests, "default_rudi_dates.to_json()", default_rudi_dates.to_json())
+    log_d(
+        tests,
+        "RudiDates.deserialize",
+        RudiDates.from_json(default_rudi_dates.to_json()),
+    )

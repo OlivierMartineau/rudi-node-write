@@ -1,0 +1,12 @@
+-r requirements.txt
+build==0.10.0
+commitizen==3.5.3
+pip-autoremove==0.10.0
+pip-chill==1.0.3
+pytest-cov==4.1.0
+twine==4.0.2
+# coverage==7.2.7 # Installed as dependency for pytest-cov
+# iniconfig==2.0.0 # Installed as dependency for pytest
+# packaging==23.1 # Installed as dependency for pytest
+# pluggy==1.2.0 # Installed as dependency for pytest
+# pytest==7.4.0 # Installed as dependency for pytest-cov

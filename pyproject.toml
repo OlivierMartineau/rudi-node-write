@@ -9,10 +9,9 @@ authors = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
 maintainers = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
 description = "Use the internal API of a RUDI Producer node"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = { text = "EUPL-1.2" }
-classifiers = ["Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
+classifiers = ["Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Natural Language :: English",
@@ -27,14 +26,20 @@ Documentation = "https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-I
 Changelog = "https://github.com/OlivierMartineau/rudi-node-write/blob/release/CHANGELOG.md"
 Repository = "https://github.com/OlivierMartineau/rudi-node-write"
 
-[project.optional-dependencies]
-packaging = ["build", "twine", "pip-chill", "pip-autoremove"]
-tests = ["pytest-cov"]
+# ----- Tool: black
+[tool.black]
+line-length = 120
+target-version = ['py311']
 
+# ----- Tool: commitizen
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+version_files = ["pyproject.toml:version"]
+
+# ----- Tool: pytest
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 norecursedirs = ["*.egg", ".eggs", "dist", "build"]
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["rudi_node_write*"]
-
+filterwarnings = ["ignore:.*pkg_resources.*:DeprecationWarning"]
+addopts = ["--cov=rudi_node_write", "--cov-report=term-missing", "--cov-report=html"]
