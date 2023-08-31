@@ -231,21 +231,27 @@ class RudiNodeApiConnector(Connector):
         """
         return sorted([org["organization_name"] for org in self.producers])
 
+    def _get_producer_with_condition(self, condition: str) -> RudiOrganization | None:
+        """
+        :param condition: a key=value pair
+        :return: the information associated with the producer on the RUDI node
+        """
+        orgs = self._get_admin_api(f"organizations?{condition}")
+        return RudiOrganization.from_json(org) if (org := get_first_list_elt_or_none(orgs)) is not None else None
+
     def get_producer_with_name(self, org_name: str) -> RudiOrganization | None:
         """
         :param org_name: a producer name
         :return: the information associated with the producer on the RUDI node
         """
-        if org := get_first_list_elt_or_none(self._get_admin_api(f"organizations?organization_name={org_name}")):
-            return RudiOrganization.from_json(org)
+        return self._get_producer_with_condition(f"organization_name={org_name}")
 
     def get_producer_with_id(self, org_id: str) -> RudiOrganization | None:
         """
         :param org_id: a producer UUID v4
         :return: the information associated with the producer on the RUDI node
         """
-        if org := self._get_admin_api(f"organizations/{org_id}"):
-            return RudiOrganization.from_json(org)
+        return self._get_producer_with_condition(f"organization_id={org_id}")
 
     def get_or_create_org_with_info(self, org_name: str, organization_info: dict = None) -> RudiOrganization | None:
         """
@@ -263,22 +269,6 @@ class RudiNodeApiConnector(Connector):
             new_org_info |= organization_info
         log_d(fun, "new_org", new_org_info)
         if new_org := self._put_admin_api("organizations", new_org_info):
-            return RudiOrganization.from_json(new_org)
-
-    def get_or_create_org_with_rudi_obj(self, org: RudiOrganization) -> RudiOrganization:
-        """
-        :param org: minimal or complete organization info (organization_name, address, GPS coordinates,
-        etc.) that will be set if the producer organization doesn't already exist on the RUDI node. The
-        organization_id
-        :return: the information associated with the producer on the RUDI node
-        """
-        fun = "get_or_create_org_with_rudi_obj"
-        if (found_org := self.get_producer_with_name(org.organization_name)) or (
-            found_org := self.get_producer_with_id(org.organization_id)
-        ):
-            log_d(fun, "found org", found_org)
-            return RudiOrganization.from_json(found_org)
-        if new_org := self._put_admin_api("organizations", org.to_json_str()):
             return RudiOrganization.from_json(new_org)
 
     def delete_org_with_id(self, organization_id: str) -> RudiOrganization:
@@ -299,7 +289,8 @@ class RudiNodeApiConnector(Connector):
         :return: the deleted organization
         """
         if org := self.get_producer_with_name(organization_name):
-            return self._del_admin_api(f"organizations/{org.organization_id}")
+            if deleted_org := self._del_admin_api(f"organizations/{org.organization_id}"):
+                return RudiOrganization.from_json(deleted_org)
         raise Exception(f"No organization was found with name '{organization_name}'")
 
     # ----------[ Contacts ]--------------------------------------------------------------------------------------------
@@ -310,21 +301,29 @@ class RudiNodeApiConnector(Connector):
         """
         return sorted([contact["contact_name"] for contact in self.contacts])
 
-    def get_contact_with_name(self, contact_name: str):
+    def _get_contact_with_condition(self, condition: str) -> RudiContact | None:
+        """
+        :param condition: a key=value pair
+        :return: the information associated with the contact on the RUDI node, or None if none were found
+        """
+        contacts = self._get_admin_api(f"contacts?{condition}")
+        return RudiContact.from_json(contact) if (contact := get_first_list_elt_or_none(contacts)) is not None else None
+
+    def get_contact_with_name(self, contact_name: str) -> RudiContact | None:
         """
         :param contact_name: a contact name
         :return: the information associated with the contact on the RUDI node
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"contacts?contact_name={contact_name}"))
+        return self._get_contact_with_condition(f"contact_name={contact_name}")
 
-    def get_contact_with_email(self, email: str):
+    def get_contact_with_email(self, email: str) -> RudiContact | None:
         """
         :param email: a contact email
         :return: the information associated with the contact on the RUDI node
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"contacts?email={email}"))
+        return self._get_contact_with_condition(f"email={email}")
 
-    def get_contact_with_name_or_email(self, contact_name: str, email: str):
+    def get_contact_with_name_or_email(self, contact_name: str, email: str) -> RudiContact | None:
         """
         :param contact_name: a contact name
         :param email: a contact email
@@ -336,7 +335,9 @@ class RudiNodeApiConnector(Connector):
             return self.get_contact_with_email(email)
         return None
 
-    def get_or_create_contact_with_info(self, contact_name: str, contact_email: str, contact_info: dict = None):
+    def get_or_create_contact_with_info(
+        self, contact_name: str, contact_email: str, contact_info: dict = None
+    ) -> RudiContact:
         """
         Finds a contact from input name or email, or creates it.
         :param contact_name: the name of the contact
@@ -348,30 +349,12 @@ class RudiNodeApiConnector(Connector):
         fun = "get_or_create_contact_with_info"
         # log_d(fun, 'contact_name', contact_name)
         # log_d(fun, 'contact_email', contact_email)
-        if contact := self.get_contact_with_name_or_email(contact_name, contact_email):
+        if contact := self.get_contact_with_name_or_email(contact_name, contact_email) is not None:
             return contact
-        new_contact = {
-            "contact_name": contact_name,
-            "contact_id": uuid4_str(),
-            "email": contact_email,
-        }
+        new_contact = {"contact_name": contact_name, "contact_id": uuid4_str(), "email": contact_email}
         if contact_info:
             new_contact |= contact_info
-        return self._put_admin_api("contacts", new_contact)
-
-    def get_or_create_contact_with_rudi_obj(self, contact: RudiContact) -> RudiContact:
-        """
-        Finds a contact from input name or email, or creates it.
-        :param contact: minimal or complete contact info (contact_name, email, etc.) that will be set if the contact
-        doesn't already exist on the RUDI node.
-        https://app.swaggerhub.com/apis/OlivierMartineau/RUDI-PRODUCER/1.3.0#/Contact
-        :return: the information associated with the contact on the RUDI node
-        """
-        if (found_contact := self.get_contact_with_email(contact.email)) or (
-            found_contact := self.get_contact_with_name(contact.contact_name)
-        ):
-            return RudiContact.from_json(found_contact)
-        return RudiContact.from_json(self._put_admin_api("contacts", contact.to_json_str()))
+        return RudiContact.from_json(self._put_admin_api("contacts", new_contact))
 
     # ----------[ Enums ]-----------------------------------------------------------------------------------------------
     @property
@@ -429,26 +412,38 @@ class RudiNodeApiConnector(Connector):
         """
         return self._get_full_obj_list("resources")
 
-    def get_metadata_with_uuid(self, metadata_uuid: str) -> dict | None:
+    def _get_first_metadata_with_condition(self, condition: str) -> RudiMetadata | None:
+        """
+        :param condition: a key=value pair
+        :return: the first metadata that verifies the condition, or None if it wasn't found
+        """
+        metadata_list = self._get_admin_api(f"resources?{condition}")
+        return (
+            RudiMetadata.from_json(metadata)
+            if (metadata := get_first_list_elt_or_none(metadata_list)) is not None
+            else None
+        )
+
+    def get_metadata_with_uuid(self, metadata_uuid: str) -> RudiMetadata | None:
         """
         :param metadata_uuid: a UUID v4
         :return: the metadata identified with the input UUID v4, or None if it wasn't found
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"resources?global_id={metadata_uuid}"))
+        return self._get_first_metadata_with_condition(f"global_id={metadata_uuid}")
 
-    def get_metadata_with_source_id(self, source_id: str) -> dict | None:
+    def get_metadata_with_source_id(self, source_id: str) -> RudiMetadata | None:
         """
         :param source_id: the ID used on the source server to identify a metadata
         :return: the metadata identified with the input source ID, or None if it wasn't found
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"resources?local_id={source_id}"))
+        return self._get_first_metadata_with_condition(f"local_id={source_id}")
 
-    def get_metadata_with_title(self, title: str) -> dict | None:
+    def get_metadata_with_title(self, title: str) -> RudiMetadata | None:
         """
         :param title: the title of a metadata
         :return: the metadata identified with the input title, or None if it wasn't found
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"resources?resource_title={title}"))
+        return self._get_first_metadata_with_condition(f"resource_title={title}")
 
     def search_metadata_with_filter(self, rudi_fields_filter: dict) -> list[dict]:
         filter_str = ""
@@ -480,34 +475,6 @@ class RudiNodeApiConnector(Connector):
             new_meta |= meta_info
         log_d(here, "new_org", new_meta)
         return self._put_admin_api("resources", new_meta)
-
-    def get_meta_with_rudi_obj(self, meta: RudiMetadata) -> RudiMetadata | None:
-        """
-        :param
-        :return: the information associated with the producer on the RUDI node
-        """
-        here = " get_meta_with_rudi_obj"
-        found_meta = self.get_metadata_with_source_id(meta.local_id)
-        if (
-            found_meta
-            or (found_meta := self.get_metadata_with_title(meta.resource_title))
-            or (found_meta := self.get_metadata_with_uuid(meta.global_id))
-        ):
-            return RudiMetadata.from_json(found_meta)
-        return None
-
-    def create_meta_with_rudi_obj(self, meta: RudiMetadata) -> dict:
-        """
-        :param
-        :return: the information associated with the producer on the RUDI node
-        """
-        meta_str = meta.to_json_str(ensure_ascii=True)
-        log_d("create_meta_with_rudi_obj", "meta_str", meta_str)
-        return self._put_admin_api(
-            url="resources",
-            headers=self._headers | {CONTENT_TYPE_KEY: "application/json"},
-            payload=meta_str,
-        )
 
     def _search_metadata_with_obj_name(self, obj_prop, obj_name: str) -> list[dict]:
         meta_list = self._get_admin_api(f"resources?{obj_prop}={quote(obj_name)}&limit={REQ_LIMIT}")
@@ -551,19 +518,19 @@ class RudiNodeApiConnector(Connector):
             )
         return media_list_final
 
-    def search_metadata_with_media_name(self, media_name: str) -> dict | None:
+    def search_metadata_with_media_name(self, media_name: str) -> list[dict] | None:
         """
         :param media_name: meta_contact of the media
         :return: metadata whose `resource_title` attribute matches the `title` input parameter
         """
-        return self._get_admin_api(f"resources?available_formats.media_name={media_name}")
+        return self._get_full_obj_list(f"resources?available_formats.media_name={media_name}")
 
-    def search_metadata_with_media_uuid(self, media_uuid: str) -> dict | None:
+    def search_metadata_with_media_uuid(self, media_uuid: str) -> list[dict] | None:
         """
         :param media_uuid: UUIDv4 of the media
         :return: metadata whose `resource_title` attribute matches the `title` input parameter
         """
-        return self._get_admin_api(f"resources?available_formats.media_id={media_uuid}")
+        return self._get_full_obj_list(f"resources?available_formats.media_id={media_uuid}")
 
     # ----------[ Media ]-----------------------------------------------------------------------------------------------
 
@@ -763,7 +730,7 @@ class RudiNodeApiConnector(Connector):
         if not isdir(local_download_dir):
             raise FileNotFoundError(f"The following folder does not exist: '{local_download_dir}'")
         meta = self.get_metadata_with_uuid(metadata_id)
-        media_list = meta.get("available_formats")
+        media_list = meta.available_formats
         if not media_list:
             return None
         files_dwnld_info = {
@@ -772,7 +739,7 @@ class RudiNodeApiConnector(Connector):
             _STATUS_SKIPPED: [],
         }
         for media in media_list:
-            dwnld_info = self.download_file_from_media_info(media, local_download_dir)
+            dwnld_info = self.download_file_from_media_info(media.to_json(), local_download_dir)
             files_dwnld_info = merge_dict_of_list(files_dwnld_info, dwnld_info)
         return files_dwnld_info
 
@@ -825,7 +792,7 @@ if __name__ == "__main__":  # pragma: no cover
     log_d(
         tests,
         "download_files_for_metadata",
-        rudi_node_api.download_files_for_metadata("7480479d-92e0-4e1d-9987-44b1eccdde1a", test_dir),
+        rudi_node_api.download_files_for_metadata("c4c8e77b-d0a2-4875-ab88-9ef77e829926", test_dir),
     )
 
     log_d(

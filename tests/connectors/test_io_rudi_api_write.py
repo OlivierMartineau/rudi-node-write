@@ -1,4 +1,3 @@
-import uuid
 from time import sleep
 
 import pytest
@@ -40,20 +39,22 @@ def test_RudiNodeApiConnector():
 
     rudi_api.set_jwt(rudi_jwt_factory.get_jwt())
     metadata_count = rudi_api.metadata_count
+    assert metadata_count > 0
 
     rudi_api.set_jwt_factory(rudi_jwt_factory)
 
     meta_1 = rudi_api.metadata_list[0]
+    rudi_meta = RudiMetadata.from_json(meta_1)
+    assert is_uuid_v4(rudi_meta.global_id)
     meta_id_1 = meta_1["global_id"]
     assert is_uuid_v4(meta_1["global_id"])
-    assert is_uuid_v4(rudi_api.get_metadata_with_uuid(meta_id_1)["global_id"])
-    rudi_meta = RudiMetadata.from_json(meta_1)
-    rudi_meta.local_id = uuid.uuid4()
-    rudi_api.create_meta_with_rudi_obj(rudi_meta)
+    meta_obj = rudi_api.get_metadata_with_uuid(meta_id_1)
+    assert is_uuid_v4(meta_obj.global_id)
 
     assert len(rudi_api.producers) > 0
     prod_1 = rudi_api.producers[0]
-    assert rudi_api.get_producer_with_id(prod_1["organization_id"])
+    assert (org := rudi_api.get_producer_with_id(prod_1["organization_id"]))
+    assert is_uuid_v4(org.organization_id)
     producer_name_1 = rudi_api.producer_names[0]
     assert rudi_api.get_producer_with_name(producer_name_1)
     assert rudi_api.get_or_create_org_with_info(producer_name_1, prod_1)
