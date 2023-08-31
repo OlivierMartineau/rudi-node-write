@@ -14,6 +14,7 @@ def test_RudiNodeJwtFactory():
     if not is_file(creds_file):
         raise FileNotFoundError(f"A JSON file with the credentials for accessing the node is required at {creds_file}")
     rudi_node_creds = read_json_file(creds_file)
+    url = rudi_node_creds["url"]
     jwt = None
     for creds in [
         {B64_AUTH_KEY: rudi_node_creds[B64_AUTH_KEY]},
@@ -23,7 +24,7 @@ def test_RudiNodeJwtFactory():
         },
     ]:
         log_d("test_RudiNodeJwtFactory", "creds", creds)
-        rudi_jwt_connector = RudiNodeJwtFactory("https://bacasable.fenix.rudi-univ-rennes1.fr", creds)
+        rudi_jwt_connector = RudiNodeJwtFactory(url, creds)
         jwt = rudi_jwt_connector.get_jwt(1)
         assert REGEX_JWT.match(jwt)
     with pytest.raises(UnexpectedValueException):

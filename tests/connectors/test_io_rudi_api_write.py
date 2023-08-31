@@ -15,11 +15,11 @@ test_dir = "./dwnld"
 if not is_dir(test_dir):
     raise FileNotFoundError(f"A local dir should be created at path '{test_dir}'")
 
-url = "https://bacasable.fenix.rudi-univ-rennes1.fr"
 creds_file = "./creds/creds.json"
 if not is_file(creds_file):
     raise FileNotFoundError(f"A JSON file with the credentials for accessing the node is required at {creds_file}")
 rudi_node_creds = read_json_file(creds_file)
+url = rudi_node_creds["url"]
 
 
 def test_RudiNodeApiConnector():
@@ -29,12 +29,12 @@ def test_RudiNodeApiConnector():
 
     rudi_jwt_factory = RudiNodeJwtFactory(url, rudi_node_creds)
 
-    jwt = rudi_jwt_factory.get_jwt(1)
-    sleep(1)
+    jwt = rudi_jwt_factory.get_jwt(2)
+    sleep(2)
     with pytest.raises(ExpiredTokenException):
         rudi_api.set_jwt(jwt)
-    rudi_api.set_jwt(rudi_jwt_factory.get_jwt(1))
-    sleep(1)
+    rudi_api.set_jwt(rudi_jwt_factory.get_jwt(2))
+    sleep(2)
     with pytest.raises(ExpiredTokenException):
         metadata_count = rudi_api.metadata_count
 
@@ -58,6 +58,11 @@ def test_RudiNodeApiConnector():
     assert rudi_api.get_producer_with_name(producer_name_1)
     assert rudi_api.get_or_create_org_with_info(producer_name_1, prod_1)
     assert rudi_api.get_or_create_org_with_info(producer_name_1, prod_1)
+
+    new_org = rudi_api.get_or_create_org_with_info("test_org", {"address": "test address"})
+    assert is_uuid_v4(new_org_id := new_org.organization_id)
+    del_org = rudi_api.delete_org_with_id(new_org_id)
+    assert del_org.organization_id == new_org_id
 
     assert len(contacts := rudi_api.contacts) > 0
     contact_name_1 = rudi_api.contact_names[0]

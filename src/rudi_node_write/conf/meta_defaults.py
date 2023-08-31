@@ -13,7 +13,7 @@ ODS_API_VERSION: str = "2.1"
 
 # Default contact when none is provided in the source metadata
 # Structure: https://app.swaggerhub.com/apis/OlivierMartineau/RUDI-PRODUCER/1.3.0#/Contact
-DEFAULT_CONTACT: dict = dict(contact_name="Rudi node admin", email="community@rudi-univ-rennes1.fr")
+DEFAULT_CONTACT: dict = {"contact_name": "Rudi node admin", "email": "community@rudi-univ-rennes1.fr"}
 
 # Default producer when none is provided in the source metadata
 # Structure: https://app.swaggerhub.com/apis/OlivierMartineau/RUDI-PRODUCER/1.3.0#/Organization

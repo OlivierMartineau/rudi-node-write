@@ -29,7 +29,7 @@ repos:
         pass_filenames: false
         always_run: true
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.5.2
+    rev: 3.7.0
     hooks:
       - id: commitizen
       - id: commitizen-branch

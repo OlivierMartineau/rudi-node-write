@@ -3,7 +3,7 @@ from rudi_node_write.utils.date_utils import time_epoch_s
 from rudi_node_write.utils.dict_utils import has_key
 from rudi_node_write.utils.err import UnexpectedValueException
 from rudi_node_write.utils.file_utils import read_json_file
-from rudi_node_write.utils.jwt import get_jwt_basic_auth, is_jwt_expired
+from rudi_node_write.utils.jwt import get_basic_auth, is_jwt_expired
 from rudi_node_write.utils.log import log_d, log_e
 
 B64_AUTH_KEY = "b64auth"
@@ -23,7 +23,7 @@ class RudiNodeJwtFactory(Connector):
         if has_key(auth, B64_AUTH_KEY):
             self._b64_auth = f"Basic {auth[B64_AUTH_KEY]}"
         elif has_key(auth, USR_AUTH_KEY) and has_key(auth, PWD_AUTH_KEY):
-            self._b64_auth = get_jwt_basic_auth(auth[USR_AUTH_KEY], auth[PWD_AUTH_KEY])
+            self._b64_auth = get_basic_auth(auth[USR_AUTH_KEY], auth[PWD_AUTH_KEY])
         else:
             err_msg = f"{B64_AUTH_KEY}', or both '{USR_AUTH_KEY}' and '{PWD_AUTH_KEY}"
             raise UnexpectedValueException("auth", err_msg, auth)
@@ -71,5 +71,5 @@ if __name__ == "__main__":  # pragma: no cover
     creds_file = "../../../creds/creds.json"
     rudi_node_creds = read_json_file(creds_file)
     # log_d(tests, "rudi_node_creds", rudi_node_creds)
-    rudi_jwt_connector = RudiNodeJwtFactory("https://bacasable.fenix.rudi-univ-rennes1.fr", rudi_node_creds)
+    rudi_jwt_connector = RudiNodeJwtFactory(rudi_node_creds["url"], rudi_node_creds)
     log_d("RudiNodeJwtFactory", "jwt", rudi_jwt_connector.get_jwt())

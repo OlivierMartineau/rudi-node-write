@@ -1,12 +1,46 @@
 -r requirements.txt
 build==0.10.0
-commitizen==3.5.3
+commitizen==3.7.0
 pip-autoremove==0.10.0
 pip-chill==1.0.3
 pytest-cov==4.1.0
 twine==4.0.2
-# coverage==7.2.7 # Installed as dependency for pytest-cov
+# argcomplete==3.1.1 # Installed as dependency for commitizen
+# bleach==6.0.0 # Installed as dependency for readme-renderer
+# certifi==2023.7.22 # Installed as dependency for requests
+# charset-normalizer==3.2.0 # Installed as dependency for commitizen, requests
+# colorama==0.4.6 # Installed as dependency for commitizen
+# coverage==7.3.0 # Installed as dependency for pytest-cov
+# decli==0.6.1 # Installed as dependency for commitizen
+# docutils==0.20.1 # Installed as dependency for readme-renderer
+# idna==3.4 # Installed as dependency for requests
+# importlib-metadata==6.8.0 # Installed as dependency for commitizen, keyring, twine
 # iniconfig==2.0.0 # Installed as dependency for pytest
-# packaging==23.1 # Installed as dependency for pytest
-# pluggy==1.2.0 # Installed as dependency for pytest
+# jaraco.classes==3.3.0 # Installed as dependency for keyring
+# jinja2==3.1.2 # Installed as dependency for commitizen
+# keyring==24.2.0 # Installed as dependency for twine
+# markdown-it-py==3.0.0 # Installed as dependency for rich
+# markupsafe==2.1.3 # Installed as dependency for jinja2
+# mdurl==0.1.2 # Installed as dependency for markdown-it-py
+# more-itertools==10.1.0 # Installed as dependency for jaraco.classes
+# packaging==23.1 # Installed as dependency for build, commitizen, pytest
+# pkginfo==1.9.6 # Installed as dependency for twine
+# pluggy==1.3.0 # Installed as dependency for pytest
+# prompt-toolkit==3.0.36 # Installed as dependency for questionary
+# pygments==2.16.1 # Installed as dependency for readme-renderer, rich
+# pyproject-hooks==1.0.0 # Installed as dependency for build
 # pytest==7.4.0 # Installed as dependency for pytest-cov
+# pyyaml==6.0.1 # Installed as dependency for commitizen
+# questionary==1.4.0 # Installed as dependency for commitizen
+# readme-renderer==41.0 # Installed as dependency for twine
+# requests==2.31.0 # Installed as dependency for requests-toolbelt, twine
+# requests-toolbelt==1.0.0 # Installed as dependency for twine
+# rfc3986==2.0.0 # Installed as dependency for twine
+# rich==13.5.2 # Installed as dependency for twine
+# six==1.16.0 # Installed as dependency for bleach
+# termcolor==2.3.0 # Installed as dependency for commitizen
+# tomlkit==0.12.1 # Installed as dependency for commitizen
+# urllib3==2.0.4 # Installed as dependency for requests, twine
+# wcwidth==0.2.6 # Installed as dependency for prompt-toolkit
+# webencodings==0.5.1 # Installed as dependency for bleach
+# zipp==3.16.2 # Installed as dependency for importlib-metadata

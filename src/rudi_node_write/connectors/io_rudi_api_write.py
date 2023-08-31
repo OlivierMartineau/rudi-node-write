@@ -24,7 +24,7 @@ from rudi_node_write.utils.file_utils import read_json_file, write_file
 from rudi_node_write.utils.jwt import is_jwt_expired
 from rudi_node_write.utils.list_utils import get_first_list_elt_or_none
 from rudi_node_write.utils.log import log_d, log_e, log_w
-from rudi_node_write.utils.str_utils import slash_join, uuid4_str
+from rudi_node_write.utils.str_utils import slash_join, uuid4_str, is_uuid_v4
 from rudi_node_write.utils.typing_utils import get_type_name, check_type
 
 REQ_LIMIT = 500
@@ -98,7 +98,7 @@ class RudiNodeApiConnector(Connector):
     def _headers(self):
         return self._initial_headers | {"Authorization": f"Bearer {self._jwt}"}
 
-    def _get_admin_api(self, url: str, keep_alive=False) -> str | int | list | dict:
+    def _get_admin_api(self, url: str, keep_alive: bool = False) -> str | int | list | dict:
         """
         Performs an identified GET request through /api/admin path
         :param url: part of the URL that comes after /api/admin
@@ -107,13 +107,10 @@ class RudiNodeApiConnector(Connector):
         :return: the result of the request, most likely a JSON
         """
         return self.request(
-            req_method="GET",
-            relative_url=slash_join("api/admin", url),
-            headers=self._headers,
-            keep_alive=keep_alive,
+            req_method="GET", relative_url=slash_join("api/admin", url), headers=self._headers, keep_alive=keep_alive
         )
 
-    def _put_admin_api(self, url: str, payload: dict | str, headers: dict = None):
+    def _put_admin_api(self, url: str, payload: dict | str, headers: dict = None, keep_alive: bool = False):
         """
         Performs an identified PUT request through /api/admin path
         :param url: part of the URL that comes after /api/admin
@@ -125,6 +122,36 @@ class RudiNodeApiConnector(Connector):
             relative_url=slash_join("api/admin", url),
             headers=headers if headers else self._headers,
             body=payload,
+            keep_alive=keep_alive,
+        )
+
+    def _post_admin_api(self, url: str, payload: dict | str, headers: dict = None, keep_alive: bool = False):
+        """
+        Performs an identified PUT request through /api/admin path
+        :param url: part of the URL that comes after /api/admin
+        :param payload: the PUT request payload
+        :return: the answer, most likely as a JSON
+        """
+        return self.request(
+            req_method="POST",
+            relative_url=slash_join("api/admin", url),
+            headers=headers if headers else self._headers,
+            body=payload,
+            keep_alive=keep_alive,
+        )
+
+    def _del_admin_api(self, url: str, headers: dict = None, keep_alive: bool = False):
+        """
+        Performs an identified PUT request through /api/admin path
+        :param url: part of the URL that comes after /api/admin
+        :param payload: the PUT request payload
+        :return: the answer, most likely as a JSON
+        """
+        return self.request(
+            req_method="DELETE",
+            relative_url=slash_join("api/admin", url),
+            headers=headers if headers else self._headers,
+            keep_alive=keep_alive,
         )
 
     def _get_full_obj_list(self, url_bit: str, max_count: int = 0) -> list[dict]:
@@ -204,21 +231,23 @@ class RudiNodeApiConnector(Connector):
         """
         return sorted([org["organization_name"] for org in self.producers])
 
-    def get_producer_with_name(self, org_name: str):
+    def get_producer_with_name(self, org_name: str) -> RudiOrganization | None:
         """
         :param org_name: a producer name
         :return: the information associated with the producer on the RUDI node
         """
-        return get_first_list_elt_or_none(self._get_admin_api(f"organizations?organization_name={org_name}"))
+        if org := get_first_list_elt_or_none(self._get_admin_api(f"organizations?organization_name={org_name}")):
+            return RudiOrganization.from_json(org)
 
-    def get_producer_with_id(self, org_id: str):
+    def get_producer_with_id(self, org_id: str) -> RudiOrganization | None:
         """
         :param org_id: a producer UUID v4
         :return: the information associated with the producer on the RUDI node
         """
-        return self._get_admin_api(f"organizations/{org_id}")
+        if org := self._get_admin_api(f"organizations/{org_id}"):
+            return RudiOrganization.from_json(org)
 
-    def get_or_create_org_with_info(self, org_name: str, organization_info: dict = None):
+    def get_or_create_org_with_info(self, org_name: str, organization_info: dict = None) -> RudiOrganization | None:
         """
         :param org_name: a producer name
         :param organization_info: additional organization info (address, GPS coordinates, etc.) that will be set if the
@@ -229,11 +258,12 @@ class RudiNodeApiConnector(Connector):
         if org := self.get_producer_with_name(org_name):
             log_d(fun, "found org", org)
             return org
-        new_org = {"organization_name": org_name, "organization_id": uuid4_str()}
+        new_org_info = {"organization_name": org_name, "organization_id": uuid4_str()}
         if organization_info:
-            new_org |= organization_info
-        log_d(fun, "new_org", new_org)
-        return self._put_admin_api("organizations", new_org)
+            new_org_info |= organization_info
+        log_d(fun, "new_org", new_org_info)
+        if new_org := self._put_admin_api("organizations", new_org_info):
+            return RudiOrganization.from_json(new_org)
 
     def get_or_create_org_with_rudi_obj(self, org: RudiOrganization) -> RudiOrganization:
         """
@@ -248,7 +278,29 @@ class RudiNodeApiConnector(Connector):
         ):
             log_d(fun, "found org", found_org)
             return RudiOrganization.from_json(found_org)
-        return RudiOrganization.from_json(self._put_admin_api("organizations", org.to_json_str()))
+        if new_org := self._put_admin_api("organizations", org.to_json_str()):
+            return RudiOrganization.from_json(new_org)
+
+    def delete_org_with_id(self, organization_id: str) -> RudiOrganization:
+        """
+        Delete organization using its id.
+        :param organization_id: the UUID v4 identifier of the organization
+        :return: the deleted organization
+        """
+        if is_uuid_v4(organization_id) and self.get_producer_with_id(organization_id):
+            if deleted_org := self._del_admin_api(f"organizations/{organization_id}"):
+                return RudiOrganization.from_json(deleted_org)
+        raise Exception(f"No organization was found with id '{organization_id}'")
+
+    def delete_org_with_name(self, organization_name: str) -> RudiOrganization:
+        """
+        Delete organization using its name.
+        :param organization_name: the name of the organization
+        :return: the deleted organization
+        """
+        if org := self.get_producer_with_name(organization_name):
+            return self._del_admin_api(f"organizations/{org.organization_id}")
+        raise Exception(f"No organization was found with name '{organization_name}'")
 
     # ----------[ Contacts ]--------------------------------------------------------------------------------------------
     @property
@@ -731,12 +783,10 @@ if __name__ == "__main__":  # pragma: no cover
     begin = time()
     creds_file = "../../../creds/creds.json"
     rudi_node_creds = read_json_file(creds_file)
+    url = rudi_node_creds["url"]
 
-    node_jwt_factory = RudiNodeJwtFactory("https://bacasable.fenix.rudi-univ-rennes1.fr", rudi_node_creds)
-    rudi_node = RudiNodeApiConnector(
-        server_url="https://bacasable.fenix.rudi-univ-rennes1.fr",
-        jwt_factory=node_jwt_factory,
-    )
+    node_jwt_factory = RudiNodeJwtFactory(url, rudi_node_creds)
+    rudi_node_api = RudiNodeApiConnector(server_url=url, jwt_factory=node_jwt_factory)
 
     # ----------- TESTS -----------
     test_dir = "../../../dwnld"
@@ -747,10 +797,10 @@ if __name__ == "__main__":  # pragma: no cover
     # log_d('RudiNodeApiConnector tests', 'meta1 id', meta1_id)
     # meta = rudi_node. get_metadata_with_uuid(meta1_id)
     # log_d('RudiNodeApiConnector tests', 'meta name', f"'{meta['resource_title']}'")
-    log_d(tests, "producers", len(rudi_node.producers))
-    log_d(tests, "producer names", rudi_node.producer_names)
-    log_d(tests, "metadata_contacts", len(rudi_node.contacts))
-    log_d(tests, "contact names", rudi_node.contact_names)
+    log_d(tests, "producers", len(rudi_node_api.producers))
+    log_d(tests, "producer names", rudi_node_api.producer_names)
+    log_d(tests, "metadata_contacts", len(rudi_node_api.contacts))
+    log_d(tests, "contact names", rudi_node_api.contact_names)
     # #
     # filter_dict = {'producer.organization_name': 'RUDI'}
     # log_d(here, 'get_metadata_with_filter', len(rudi_node.get_metadata_with_filter(filter_dict)))
@@ -761,10 +811,10 @@ if __name__ == "__main__":  # pragma: no cover
     # log_d(here, 'get_metadata_with_contact Bacasable', len(rudi_node.get_metadata_with_contact('Bacasable')))
     # log_d(here, 'get_metadata_with_contact Wanda Torphy', len(rudi_node.get_metadata_with_contact('Wanda Torphy')))
     #
-    log_d(tests, "themes", len(rudi_node.themes))
-    log_d(tests, "used_themes", len(rudi_node.used_themes))
-    log_d(tests, "keywords", len(rudi_node.keywords))
-    log_d(tests, "used_keywords", len(rudi_node.used_keywords))
+    log_d(tests, "themes", len(rudi_node_api.themes))
+    log_d(tests, "used_themes", len(rudi_node_api.used_themes))
+    log_d(tests, "keywords", len(rudi_node_api.keywords))
+    log_d(tests, "used_keywords", len(rudi_node_api.used_keywords))
 
     # log_d(tests, {"a": [1, 2], "b": ["a", "b"]} | {"a": [0, 2], "b": ["aa", "bb"]})
     #
@@ -775,25 +825,25 @@ if __name__ == "__main__":  # pragma: no cover
     log_d(
         tests,
         "download_files_for_metadata",
-        rudi_node.download_files_for_metadata("7480479d-92e0-4e1d-9987-44b1eccdde1a", test_dir),
+        rudi_node_api.download_files_for_metadata("7480479d-92e0-4e1d-9987-44b1eccdde1a", test_dir),
     )
 
     log_d(
         tests,
         "download_file_with_media_uuid '782bab2d-7ee8-4633-9c0a-173649b4d879'",
-        rudi_node.download_file_with_media_uuid("782bab2d-7ee8-4633-9c0a-173649b4d879", test_dir),
+        rudi_node_api.download_file_with_media_uuid("782bab2d-7ee8-4633-9c0a-173649b4d879", test_dir),
     )
 
     log_d(
         tests,
         f"download_file_with_name '782bab2d-7ee8-4633-9c0a-173649b4d879'",
-        rudi_node.download_file_with_name("782bab2d-7ee8-4633-9c0a-173649b4d879", test_dir),
+        rudi_node_api.download_file_with_name("782bab2d-7ee8-4633-9c0a-173649b4d879", test_dir),
     )
 
     log_d(
         tests,
         "download_file_with_name 'toucan.jpg'",
-        "\n" + str(rudi_node.download_file_with_name("toucan.jpg", test_dir)),
+        "\n" + str(rudi_node_api.download_file_with_name("toucan.jpg", test_dir)),
     )
 
     log_d(tests, "exec. time", time() - begin)

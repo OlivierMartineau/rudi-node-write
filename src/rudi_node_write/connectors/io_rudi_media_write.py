@@ -7,7 +7,7 @@ from urllib.parse import quote
 from rudi_node_write.connectors.io_connector import Connector, CONTENT_TYPE_KEY
 from rudi_node_write.rudi_types.rudi_const import MEDIA_TYPE_FILE, MIME_TYPES_UTF8_TEXT
 from rudi_node_write.utils.file_utils import read_json_file, FileDetails
-from rudi_node_write.utils.jwt import get_jwt_basic_auth
+from rudi_node_write.utils.jwt import get_basic_auth
 from rudi_node_write.utils.log import log_d, log_w
 from rudi_node_write.utils.str_utils import slash_join
 
@@ -100,7 +100,7 @@ class RudiMediaHeadersFactoryBasicAuth(RudiMediaHeadersFactory):
         headers_user_agent: str = "RudiMediaHeadersFactoryBasicAuth",
     ):
         super().__init__(headers_user_agent)
-        self._initial_headers |= {"Authorization": get_jwt_basic_auth(usr, pwd)}
+        self._initial_headers |= {"Authorization": get_basic_auth(usr, pwd)}
 
 
 class RudiNodeMediaConnector(Connector):
@@ -196,10 +196,7 @@ if __name__ == "__main__":  # pragma: no cover
     creds_file = "../../../creds/creds.json"
     rudi_node_creds = read_json_file(creds_file)
     media_headers_factory = RudiMediaHeadersFactoryBasicAuth(usr=rudi_node_creds["usr"], pwd=rudi_node_creds["pwd"])
-    rudi_media = RudiNodeMediaConnector(
-        server_url="https://bacasable.fenix.rudi-univ-rennes1.fr",
-        headers_factory=media_headers_factory,
-    )
+    rudi_media = RudiNodeMediaConnector(server_url=rudi_node_creds["url"], headers_factory=media_headers_factory)
     log_d(tests, "media list", rudi_media.media_list)
 
     dwnld_dir = "../../../tests/_test_files/"

@@ -10,7 +10,7 @@ from rudi_node_write.utils.log import log_d_if, log_e, log_d
 from rudi_node_write.utils.str_utils import slash_join
 from rudi_node_write.utils.url_utils import url_encode_req_params
 
-HttpRequestMethod = Literal["GET", "PUT", "DEL", "POST"]
+HttpRequestMethod = Literal["GET", "PUT", "DELETE", "POST"]
 HTTP_REQUEST_METHODS = get_args(HttpRequestMethod)
 
 CONTENT_TYPE_KEY = "Content-Type"

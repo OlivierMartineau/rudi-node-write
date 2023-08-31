@@ -1,8 +1,9 @@
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from json import loads
-from math import ceil
 from re import compile
 from time import time
+
+from math import ceil
 
 from rudi_node_write.utils.log import log_e
 from rudi_node_write.utils.typing_utils import is_def
@@ -16,9 +17,9 @@ def pad_b64_str(jwt_base64url: str):
     return jwt_base64url if mod == 0 else jwt_base64url.ljust(jwt_str_length + 4 - mod, "=")
 
 
-def get_jwt_basic_auth(usr: str, pwd: str):
-    token = urlsafe_b64encode(bytes(f"{usr}:{pwd}", "utf-8")).decode("ascii").replace("=", "")
-    return f"Basic {pad_b64_str(token)}"
+def get_basic_auth(usr: str, pwd: str):
+    auth_str = urlsafe_b64encode(bytes(f"{usr}:{pwd}", "utf-8")).decode("ascii").replace("=", "")
+    return f"Basic {pad_b64_str(auth_str)}"
 
 
 def get_jwt_exp(jwt: str) -> int:

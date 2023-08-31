@@ -1,4 +1,4 @@
-from rudi_node_write.utils.jwt import is_jwt_expired, pad_b64_str, get_jwt_basic_auth
+from rudi_node_write.utils.jwt import is_jwt_expired, pad_b64_str, get_basic_auth
 
 
 def test_pad_b64_str():
@@ -11,7 +11,7 @@ def test_pad_b64_str():
 
 
 def test_get_jwt_basic_auth():
-    assert get_jwt_basic_auth("usér", "pwÆéd") == "Basic dXPDqXI6cHfDhsOpZA=="
+    assert get_basic_auth("usér", "pwÆéd") == "Basic dXPDqXI6cHfDhsOpZA=="
 
 
 def test_is_jwt_expired():
