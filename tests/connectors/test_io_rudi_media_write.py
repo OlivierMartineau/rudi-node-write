@@ -18,9 +18,6 @@ def test_RudiMediaHeadersFactoryBasicAuth():
     media_headers_factory = RudiMediaHeadersFactoryBasicAuth(
         usr=rudi_node_creds[USR_AUTH_KEY], pwd=rudi_node_creds[PWD_AUTH_KEY]
     )
-    rudi_media = RudiNodeMediaConnector(
-        server_url=rudi_node_creds["url"],
-        headers_factory=media_headers_factory,
-    )
+    rudi_media = RudiNodeMediaConnector(server_url=rudi_node_creds["url"], headers_factory=media_headers_factory)
 
     assert len(rudi_media.media_list) > 0
