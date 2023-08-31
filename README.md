@@ -74,7 +74,8 @@ print("listing the media stored on the RUDI node: ", rudi_media.media_list)
 
 ## Testing
 
-The [tests](./tests) can be analyzed for further information about how to call the "RUDI API" and the "RUDI Media"
+The [tests](https://github.com/OlivierMartineau/rudi-node-write/tree/release/tests) can be analyzed for further
+information about how to call the "RUDI API" and the "RUDI Media"
 servers.
 
 ```bash
