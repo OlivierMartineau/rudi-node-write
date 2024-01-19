@@ -65,7 +65,6 @@ class HttpError(Exception):
     status = 500
 
     def __init__(self, err, req_method: str | None = None, base_url: str | None = None, url: str | None = None):
-        here = "HttpError"
         err_msg = f"HTTP ERR {self.status} {err}"
         # print(here, f"http err {self.status}:", err)
         if type(err) is dict and "error" in err and "message" in err:

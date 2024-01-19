@@ -16,7 +16,7 @@ from rudi_node_write.utils.file_utils import (
 
 TEST_FILES_DIR = "./tests/_test_files"
 YAML_FILE_PATH = f"{TEST_FILES_DIR}/RUDI producer internal API - 1.3.0.yml"
-YAML_FILE_SIZE = 91580
+YAML_FILE_SIZE = 90717
 PY_FILE_PATH = "./src/rudi_node_write/utils/file_utils.py"
 
 

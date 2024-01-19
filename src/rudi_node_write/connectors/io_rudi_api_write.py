@@ -465,12 +465,13 @@ class RudiNodeApiConnector(Connector):
 
     def get_or_create_meta_with_info(self, meta_title: str, meta_info: dict = None):
         """
+        TODO: comments, simple_create + Jupyter
         :param meta_title: the metadata resource title
         :param meta_info: additional metadata info
         https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-InternalAPI/1.3.0#/Metadata
         :return: the metadata that can be found on the RUDI node
         """
-        here = " get_or_create_meta_with_info"
+        here = "get_or_create_meta_with_info"
         if found_meta := self.get_metadata_with_title(meta_title):
             log_d(here, "found org", found_meta)
             return found_meta
