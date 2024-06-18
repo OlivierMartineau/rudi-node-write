@@ -22,7 +22,7 @@ The Jupyter notebook [`README.ipynb`](https://github.com/OlivierMartineau/rudi-n
 
 ## Testing
 
-The [tests](https://github.com/OlivierMartineau/rudi-node-write/tree/release/tests) can be analyzed for further
+The [tests](https://github.com/OlivierMartineau/rudi-node-write/tree/main/tests) can be analyzed for further
 information about how to call the API
 
 ```bash
