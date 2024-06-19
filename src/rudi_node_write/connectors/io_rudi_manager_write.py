@@ -78,6 +78,7 @@ class RudiNodeManagerConnector(Connector):
         self._cached_pm_headers = None
 
         self._cached_media_url = None
+        self._default_media_url = ""
         self._cached_media_jwt = ""
         self._cached_media_headers = None
         self._cached_media_connector = None
@@ -214,13 +215,17 @@ class RudiNodeManagerConnector(Connector):
             self._cached_pm_headers["Authorization"] = f"Bearer {self._pm_jwt}"
         return self._cached_pm_headers
 
+    def set_media_url(self, media_url: str):
+        self._default_media_url = media_url
+
     @property
-    def media_url(self):
+    def media_url(self) -> str:
         if self._cached_media_url is None:
             node_urls = self._get_api(url="front/node-urls", headers=self._pm_headers)
             if node_urls is None or not isinstance(node_urls, dict):
                 raise HttpErrorNotFound("The server does not know the URL: front/node-urls")
-            self._cached_media_url = node_urls["media_url"]
+            media_url = node_urls.get("media_url")
+            self._cached_media_url = media_url if media_url is not None else self._default_media_url
             # log_d(here, "_cached_media_url:", self._cached_media_url)
         return self._cached_media_url
 
