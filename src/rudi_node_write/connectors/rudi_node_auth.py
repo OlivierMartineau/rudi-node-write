@@ -24,7 +24,7 @@ class RudiNodeAuth(Serializable):
                 self.usr, self.pwd = urlsafe_b64decode(b64url_auth).decode("utf-8").split(":")
             except:
                 raise ValueError(
-                    "The input `b64url_auth` should be a urlsafe-base64 string that encodes a `usr:pwd` string couple."
+                    "The input `b64url_auth` should be a urlsafe-base64 string that encodes a `usr:pwd` string couple"
                 )
         elif usr is not None and pwd is not None:
             self.usr = usr
@@ -53,7 +53,7 @@ class RudiNodeAuth(Serializable):
             if len(str_list) == 2:
                 usr, pwd = str_list
                 return RudiNodeAuth(usr=usr, pwd=pwd)
-            raise ValueError("The input is a string that cannot be recognize as identifiers.")
+            raise ValueError("The input is a string that cannot be recognized as identifiers")
         if isinstance(o, dict):
             for key in ("b64auth", "b64_auth", "b64url_auth", "b64_url_auth"):
                 if (b64_auth := o.get(key)) is not None:
@@ -62,6 +62,7 @@ class RudiNodeAuth(Serializable):
             pwd = o.get("pwd")
             if usr is not None and pwd is not None:
                 return RudiNodeAuth(usr=usr, pwd=pwd)
+        raise ValueError("The input cannot be recognized as identifiers")
 
     @property
     def basic_auth(self) -> str:

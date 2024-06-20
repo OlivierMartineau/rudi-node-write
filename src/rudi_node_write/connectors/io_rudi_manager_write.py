@@ -69,7 +69,7 @@ class RudiNodeManagerConnector(Connector):
         if isinstance(auth, RudiNodeAuth):
             self._auth = auth
         elif isinstance(auth, dict):
-            self._auth = RudiNodeAuth(b64url_auth=auth["b64url_auth"], usr=auth[usr], pwd=auth["pwd"])
+            self._auth = RudiNodeAuth(b64url_auth=auth["b64url_auth"], usr=auth["usr"], pwd=auth["pwd"])
         else:
             raise TypeError("Input 'auth' parameter should either be a 'RudiNodeAuth' object or a dict.")
         self._headers_user_agent = headers_user_agent
@@ -423,7 +423,16 @@ class RudiNodeManagerConnector(Connector):
         """
         :return: the list of the metadata_contacts declared on the RUDI producer node
         """
-        return self.get_data("media")  # type: ignore
+        list_medias = self.get_data("media")
+        if not isinstance(list_medias, list) or len(list_medias) is 0:
+            medias = {}
+            metadatas = self.metadata_list
+            for meta in metadatas:
+                for media in meta["available_formats"]:
+                    medias[media["media_id"]] = media
+            list_medias = list(medias.values())
+            self._data_cache["media"] = list_medias
+        return list_medias
 
     @property
     def organization_names(self) -> list[str]:
@@ -1220,17 +1229,17 @@ if __name__ == "__main__":  # pragma: no cover
     NODE_URL = "url"  # The URL of RUDI node
     PM_URL = "pm_url"  # The URL of the RUDI node manager. If not set in the credential file, it will be set to NODE_URL+'/prodmanager'
     tests = "RudiNodeManagerConnector tests"
-    creds_file = "../../../creds/creds.json"
+    creds_file = "../../../creds/bas_creds.json"
     rudi_node_creds = read_json_file(creds_file)
+    auth = RudiNodeAuth.from_json(rudi_node_creds)
+    pm_url = slash_join(rudi_node_creds["url"], "/prodmanager")
 
-    if (b64url_auth := rudi_node_creds["pm_b64auth"]) is not None:
-        auth = RudiNodeAuth(b64url_auth=b64url_auth)
-    else:
-        usr = rudi_node_creds["pm_usr"]
-        pwd = rudi_node_creds["pm_pwd"]
-        auth = RudiNodeAuth(usr=usr, pwd=pwd)
-
-    pm_url = rudi_node_creds["pm_url"]
+    # if (b64url_auth := rudi_node_creds["pm_b64auth"]) is not None:
+    #     auth = RudiNodeAuth(b64url_auth=b64url_auth)
+    # else:
+    #     usr = rudi_node_creds["pm_usr"]
+    #     pwd = rudi_node_creds["pm_pwd"]
+    #     auth = RudiNodeAuth(usr=usr, pwd=pwd)
 
     pm_connector = RudiNodeManagerConnector(server_url=pm_url, auth=auth)
     pm_connector.test_connection()

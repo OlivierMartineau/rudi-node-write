@@ -10,7 +10,7 @@ from rudi_node_write.utils.log import log_d
 
 
 def test_RudiNodeJwtFactory():
-    creds_file = "./creds/creds.json"
+    creds_file = "./creds/bas_creds.json"
     if not is_file(creds_file):
         raise FileNotFoundError(f"A JSON file with the credentials for accessing the node is required at {creds_file}")
     rudi_node_creds = read_json_file(creds_file)

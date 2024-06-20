@@ -10,7 +10,7 @@ from rudi_node_write.utils.jwt import is_jwt_expired
 from rudi_node_write.utils.str_utils import is_uuid_v4
 
 test_dir = check_is_dir("./dwnld")
-creds_file = check_is_file("./creds/creds.json")
+creds_file = check_is_file("./creds/bas_creds.json")
 
 rudi_node_creds = read_json_file(creds_file)
 url = rudi_node_creds["url"]

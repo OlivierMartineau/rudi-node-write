@@ -1,19 +1,20 @@
 from rudi_node_write.connectors.io_rudi_manager_write import RudiNodeManagerConnector
 from rudi_node_write.connectors.rudi_node_auth import RudiNodeAuth
 from rudi_node_write.utils.file_utils import check_is_dir, check_is_file, read_json_file
+from rudi_node_write.utils.str_utils import slash_join
 from rudi_node_write.utils.type_date import Date
 
 test_dir = check_is_dir("./dwnld")
-creds_file = check_is_file("./creds/creds.json")
+creds_file = check_is_file("./creds/bas_creds.json")
 
 rudi_node_creds = read_json_file(creds_file)
-NODE_URL = "url"  # The URL of RUDI node
-PM_URL = "pm_url"  # The URL of the RUDI node manager. If not set in the credential file, it will be set to NODE_URL+'/prodmanager'
-url = rudi_node_creds[NODE_URL]
-pm_url = rudi_node_creds[PM_URL] if rudi_node_creds[PM_URL] else (rudi_node_creds[NODE_URL] + "/prodmanager")
-
-auth = RudiNodeAuth(b64url_auth=rudi_node_creds["pm_b64auth"])
+auth = RudiNodeAuth.from_json(rudi_node_creds)
+pm_url = slash_join(rudi_node_creds["url"], "prodmanager")
+assert isinstance(auth, RudiNodeAuth)
 pm = RudiNodeManagerConnector(server_url=pm_url, auth=auth)
+if pm.media_url == "":
+    media_url = slash_join(f"{pm.scheme}://{pm.host}", "media")
+    pm.set_media_url(media_url)
 
 
 def test_connection():
