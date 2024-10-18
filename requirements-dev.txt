@@ -1,0 +1,18 @@
+backports.tarfile==1.2.0
+importlib-metadata==8.0.0
+importlib-resources==6.4.0
+jaraco.collections==5.1.0
+packaging==24.1
+pip-chill==1.0.3
+pip-upgrade-outdated==1.5
+platformdirs==4.2.2
+tomli==2.0.1
+# autocommand==2.2.2 # Installed as dependency for jaraco.text
+# inflect==7.3.1 # Installed as dependency for jaraco.text
+# jaraco.context==5.3.0 # Installed as dependency for jaraco.text
+# jaraco.functools==4.0.1 # Installed as dependency for jaraco.text
+# jaraco.text==3.12.1 # Installed as dependency for jaraco.collections
+# more-itertools==10.3.0 # Installed as dependency for inflect, jaraco.functools, jaraco.text
+# typeguard==4.3.0 # Installed as dependency for inflect
+# typing-extensions==4.12.2 # Installed as dependency for typeguard
+# zipp==3.19.2 # Installed as dependency for importlib-metadata
