@@ -1,0 +1,6 @@
+beautifulsoup4==4.12.3
+chardet==5.2.0
+deepdiff==8.0.1
+puremagic==1.28
+# orderly-set==5.2.3 # Installed as dependency for deepdiff
+# soupsieve==2.6 # Installed as dependency for beautifulsoup4
