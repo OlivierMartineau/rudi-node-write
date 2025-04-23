@@ -1,6 +1,7 @@
-beautifulsoup4==4.12.3
+beautifulsoup4==4.13.4
 chardet==5.2.0
-deepdiff==8.1.1
+deepdiff==8.4.2
 puremagic==1.28
-# orderly-set==5.2.3 # Installed as dependency for deepdiff
-# soupsieve==2.6 # Installed as dependency for beautifulsoup4
+# orderly-set==5.4.0 # Installed as dependency for deepdiff
+# soupsieve==2.7 # Installed as dependency for beautifulsoup4
+# typing-extensions==4.13.2 # Installed as dependency for beautifulsoup4, pyright, referencing, typeguard
