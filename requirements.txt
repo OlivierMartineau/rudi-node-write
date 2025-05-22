@@ -1,0 +1,7 @@
+# beautifulsoup4==4.13.4 # Installed as dependency for rudi-node-write
+# chardet==5.2.0 # Installed as dependency for rudi-node-write
+# deepdiff==8.5.0 # Installed as dependency for rudi-node-write
+# orderly-set==5.4.1 # Installed as dependency for deepdiff
+# puremagic==1.29 # Installed as dependency for rudi-node-write
+# soupsieve==2.7 # Installed as dependency for beautifulsoup4
+# typing-extensions==4.13.2 # Installed as dependency for beautifulsoup4, pyright, referencing, typeguard
