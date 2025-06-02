@@ -1,0 +1,7 @@
+beautifulsoup4==4.13.4
+chardet==5.2.0
+deepdiff==8.5.0
+puremagic==1.29
+# orderly-set==5.4.1 # Installed as dependency for deepdiff
+# soupsieve==2.7 # Installed as dependency for beautifulsoup4
+# typing-extensions==4.14.0 # Installed as dependency for anyio, beautifulsoup4, fastapi, huggingface-hub, pydantic, pydantic-core, pyright, referencing, rich-toolkit, torch, typeguard, typer, typing-inspection
