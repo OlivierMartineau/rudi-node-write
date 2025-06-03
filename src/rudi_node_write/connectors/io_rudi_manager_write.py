@@ -1,6 +1,5 @@
-from base64 import urlsafe_b64decode, urlsafe_b64encode
 from json import dumps
-from os.path import abspath, exists, isdir
+from os.path import exists, isdir
 from ssl import SSLCertVerificationError
 from time import time
 from typing import Literal
@@ -22,10 +21,10 @@ from rudi_node_write.rudi_types.serializable import Serializable
 from rudi_node_write.utils.dict_utils import check_is_dict, merge_dict_of_list, pick_in_dict, safe_get_key
 from rudi_node_write.utils.err import HttpError, HttpErrorNotFound, UnexpectedValueException
 from rudi_node_write.utils.file_utils import check_is_file, read_json_file, write_file
-from rudi_node_write.utils.jwt import is_base64_url, is_jwt_expired, pad_b64_str
+from rudi_node_write.utils.jwt import is_jwt_expired
 from rudi_node_write.utils.list_utils import get_first_list_elt_or_none
 from rudi_node_write.utils.log import log_d, log_e, log_w
-from rudi_node_write.utils.str_utils import check_is_uuid4, is_uuid_v4, slash_join, uuid4_str
+from rudi_node_write.utils.str_utils import absolute_path, check_is_uuid4, is_uuid_v4, slash_join, uuid4_str
 from rudi_node_write.utils.type_date import Date
 from rudi_node_write.utils.typing_utils import check_is_int, get_type_name
 from rudi_node_write.utils.url_utils import ensure_url_startswith
