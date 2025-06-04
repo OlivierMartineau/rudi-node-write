@@ -1,0 +1,79 @@
+{
+  "dataset_dates": {
+    "created": "2012-04-16T00:00:00.000Z",
+    "updated": "2012-06-16T09:57:57.000Z"
+  },
+  "access_condition": {
+    "licence": {
+      "licence_type": "STANDARD",
+      "licence_label": "odbl-1.0"
+    },
+    "confidentiality": {
+      "restricted_access": false,
+      "gdpr_sensitive": false
+    }
+  },
+  "metadata_info": {
+    "api_version": "1.3.0",
+    "metadata_dates": {
+      "created": "2023-01-06T17:12:51.528Z",
+      "updated": "2023-10-23T15:40:23.699Z"
+    }
+  },
+  "global_id": "c996ed92-2831-44b2-ab88-8fa319acd04b",
+  "local_id": "resultats-des-elections-cantonales-a-rennes-de-2004-a-20111",
+  "resource_title": "Résultats des élections cantonales à Rennes de 2008",
+  "synopsis": [
+    {
+      "lang": "fr",
+      "text": "Résultats détaillés pour Rennes des élections cantonales de 2008, par bureau de vote, au format CSV."
+    }
+  ],
+  "summary": [
+    {
+      "lang": "fr",
+      "text": "Résultats détaillés pour Rennes des élections cantonales de 2008, par bureau de vote, au format CSV."
+    }
+  ],
+  "theme": "citizenship",
+  "keywords": ["Citoyenneté"],
+  "collection_tag": "init",
+  "producer": {
+    "organization_id": "349b050c-cd74-447c-b82e-b7e7b2553c1d",
+    "organization_name": "Ville de Rennes"
+  },
+  "contacts": [
+    {
+      "contact_id": "74b973fa-59c1-4f40-9dbe-0e2ca1e66af7",
+      "contact_name": "Ville de Rennes",
+      "email": "ville_de_rennes@rennes.fr"
+    }
+  ],
+  "available_formats": [
+    {
+      "checksum": {
+        "algo": "MD5",
+        "hash": "38dab92b988a81a9a27ff9e000a95902"
+      },
+      "media_dates": {
+        "created": "2023-01-06T16:22:40.116Z",
+        "updated": "2023-01-06T16:22:40.116Z"
+      },
+      "connector": {
+        "url": "https://data-rudi.aqmo.org/media/download/cc16ebb5-2c2e-461a-92fd-62a9f58bd6bd",
+        "interface_contract": "dwnl"
+      },
+      "file_type": "application/json",
+      "file_size": 108397,
+      "file_storage_status": "missing",
+      "file_status_update": "2023-01-06T16:22:40.122Z",
+      "media_id": "cc16ebb5-2c2e-461a-92fd-62a9f58bd6bd",
+      "media_type": "FILE",
+      "media_name": "resultats-des-elections-cantonales-a-rennes-de-2004-a-20111"
+    }
+  ],
+  "resource_languages": ["fr"],
+  "storage_status": "pending",
+  "metadata_status": "incomplete",
+  "restricted_access": false
+}
