@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordsResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd">
+    <csw:SearchStatus timestamp="2023-06-26T13:50:53"/>
+    <csw:SearchResults numberOfRecordsMatched="276" numberOfRecordsReturned="5" elementSet="full" nextRecord="0">
+        <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ows="http://www.opengis.net/ows"
+            xmlns:dct="http://purl.org/dc/terms/">
+            <dc:identifier>9c86a731-27d7-4b03-a00e-7b620b43e91a</dc:identifier>
+            <dc:date>2023-03-09T15:07:38</dc:date>
+            <dc:title>Secteurs CCAS sur Rennes Métropole</dc:title>
+            <dc:type>dataset</dc:type>
+            <dc:subject>Services d'utilité publique et services publics</dc:subject>
+            <dc:subject>service social</dc:subject>
+            <dc:subject>aide sociale</dc:subject>
+            <dc:subject>politique sociale</dc:subject>
+            <dc:subject>services et équipements publics : éducation enseignement social et citoyenneté</dc:subject>
+            <dc:subject>données ouvertes</dc:subject>
+            <dc:subject>utilitiesCommunication</dc:subject>
+            <dc:format>GML</dc:format>
+            <dct:modified>2022-12-28</dct:modified>
+            <dct:abstract>Cette couche contient les périmètres d'action des différents CCAS présents sur le territoire
+                de Rennes Métropole.
+                Sur Rennes, ce sont 6 secteurs CCAS certains regroupant 2 quartiers chacun.
+                Pour les autres communes de la Métropole, le CCAS indiqué correspond au site où se renseigner pour avoir
+                des informations en matière d'aides sociales (en général la mairie de la commune concernée sauf pour le
+                CIAS à l'Ouest de Rennes qui regroupent plusieurs communes).
+                Parmi les attributs décrivant la couche :
+                - nom_ctr_social = nom du CCAS ;
+                - secteur_ccas = identifiant du CCAS ;
+                - num_quartier = numéro du quartier (uniquement sur Rennes) ;
+                - quartier = nom du quartier (uniquement sur Rennes) ;
+                - id_org = identifiant de l'organisme CCAS dans la couche de données Organismes de la base de données
+                Sites &amp; Organismes sur le territoire de Rennes Métropole
+                (https://public.sig.rennesmetropole.fr/geonetwork/srv/fre/catalog.search#/metadata/46a39b8c-5ec4-449a-bfe1-8410d0b76c84).
+            </dct:abstract>
+            <dc:description>Cette couche contient les périmètres d'action des différents CCAS présents sur le territoire
+                de Rennes Métropole.
+                Sur Rennes, ce sont 6 secteurs CCAS certains regroupant 2 quartiers chacun.
+                Pour les autres communes de la Métropole, le CCAS indiqué correspond au site où se renseigner pour avoir
+                des informations en matière d'aides sociales (en général la mairie de la commune concernée sauf pour le
+                CIAS à l'Ouest de Rennes qui regroupent plusieurs communes).
+                Parmi les attributs décrivant la couche :
+                - nom_ctr_social = nom du CCAS ;
+                - secteur_ccas = identifiant du CCAS ;
+                - num_quartier = numéro du quartier (uniquement sur Rennes) ;
+                - quartier = nom du quartier (uniquement sur Rennes) ;
+                - id_org = identifiant de l'organisme CCAS dans la couche de données Organismes de la base de données
+                Sites &amp; Organismes sur le territoire de Rennes Métropole
+                (https://public.sig.rennesmetropole.fr/geonetwork/srv/fre/catalog.search#/metadata/46a39b8c-5ec4-449a-bfe1-8410d0b76c84).
+            </dc:description>
+            <dc:rights>otherRestrictions</dc:rights>
+            <dc:rights>license</dc:rights>
+            <dc:language>fre</dc:language>
+            <dc:source>Cette couche est gérée dans QGIS sous la forme d'une table (serv_equipub.ccas) indiquant, pour
+                chaque commune ou quartier, le CCAS de rattachement. La géométrie est issue des couches des Limites
+                communales référentielles de Rennes Métropole (polygones)
+                (https://public.sig.rennesmetropole.fr/geonetwork/srv/fre/catalog.search#/metadata/33f019b4-40e5-4fe7-9bc4-358960e021bb)
+                et des Périmètres des 12 quartiers de Rennes
+                (https://public.sig.rennesmetropole.fr/geonetwork/srv/fre/catalog.search#/metadata/57c79ab9-2289-4a15-a579-0ee668d8dfa1).
+            </dc:source>
+            <dc:format>GML</dc:format>
+            <ows:BoundingBox crs="urn:ogc:def:crs:::RGF93 / CC48 (EPSG:3948)">
+                <ows:LowerCorner>-1.46558 47.93192</ows:LowerCorner>
+                <ows:UpperCorner>-1.96327 48.30684</ows:UpperCorner>
+            </ows:BoundingBox>
+            <dc:URI protocol="OGC:WMS" name="eq_educ:v_ccas" description="Secteurs CCAS sur Rennes Métropole"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wms&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="OGC:WFS" name="eq_educ:v_ccas" description="Secteurs CCAS sur Rennes Métropole"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="WWW:LINK-1.0-http--link" description="Site open data de Rennes Métropole">
+                https://data.rennesmetropole.fr/explore/dataset/secteurs_ccas_rennes_metropole
+            </dc:URI>
+            <dc:URI protocol="OGC:GML" description="Lien de téléchargement direct (GML3 EPSG:3948)"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;version=2.0.0&amp;request=getfeature&amp;typename=eq_educ:v_ccas&amp;srsname=EPSG:3948&amp;outputformat=GML3&amp;format_options=charset:utf-8
+            </dc:URI>
+            <dc:URI protocol="image/png">
+                http://public.sig.rennesmetropole.fr/ressources/catalogue/apercus/serv_equipub_v_ccas.png
+            </dc:URI>
+        </csw:Record>
+        <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ows="http://www.opengis.net/ows"
+            xmlns:dct="http://purl.org/dc/terms/">
+            <dc:identifier>3758c6b6-04e2-47b0-99a8-960c991ae199</dc:identifier>
+            <dc:date>2023-04-27T09:23:31</dc:date>
+            <dc:title>Occupation du sol des Milieux Naturels d’Intérêt Ecologique (MNIE) sur le Pays de Rennes en 2016
+            </dc:title>
+            <dc:type>dataset</dc:type>
+            <dc:subject>Habitats et biotopes</dc:subject>
+            <dc:subject>réseau de biotope</dc:subject>
+            <dc:subject>zone sensible (écologie)</dc:subject>
+            <dc:subject>biotope</dc:subject>
+            <dc:subject>protection de la faune et de la flore</dc:subject>
+            <dc:subject>écologie du paysage</dc:subject>
+            <dc:subject>protection de biotope</dc:subject>
+            <dc:subject>patrimoine naturel : habitats et biotopes</dc:subject>
+            <dc:subject>données ouvertes</dc:subject>
+            <dc:subject>biota</dc:subject>
+            <dc:format>GML</dc:format>
+            <dct:modified>2016-10-24</dct:modified>
+            <dct:abstract>L’inventaire des Milieux Naturels d’Intérêt Ecologique (MNIE) a été lancé sous l’impulsion des
+                élus du District de Rennes dès les années 1990. Cette démarche volontaire des élus pour améliorer la
+                prise en compte de la biodiversité à l’échelle de leur territoire a permis d’enrichir de manière notable
+                la connaissance et la répartition des milieux naturels du territoire. Les élus du SCoT ont décidé
+                d’élargir cet inventaire à l’ensemble du territoire du Pays de Rennes.
+                Le SCoT a établi une protection stricte de ces milieux. Depuis son approbation en décembre 2007, ils
+                sont devenus réglementairement inconstructibles. Un document unique « l’Atlas des MNIE du Pays de Rennes
+                » localise l’ensemble des sites identifiés sur le territoire du Pays de Rennes. Le Syndicat mixte du
+                SCoT est désormais la structure qui pilote le dossier des MNIE.
+
+                Cet atlas référence, entre autre :
+                - Les grands ensembles naturels (GEN), espaces sans portée règlementaire ;
+                - Les milieux naturels d’intérêt écologique (MNIE), espaces strictement protégés par le SCOT,
+                qui leur donne un portée règlementaire.
+
+                Cette couche localise les principaux types d'occupation du sol des Milieux Naturels d’Intérêt Ecologique
+                (MNIE).
+
+                On désigne par le sigle MNIE les « Milieux Naturels d’Intérêt Écologique ». Ce sont des sites constitués
+                par un ou plusieurs habitats naturels et présentant un intérêt marqué pour la faune et/ou la flore. Un
+                MNIE est de plus petite surface qu’un GEN, dans lequel il est très souvent inclus. Notons toutefois que
+                certains MNIE peuvent être isolés dans un espace banalisé en dehors d’un GEN. Ces MNIE sont des espaces
+                strictement protégés par le ScoT, qui leur donne une portée règlementaire.
+            </dct:abstract>
+            <dc:description>L’inventaire des Milieux Naturels d’Intérêt Ecologique (MNIE) a été lancé sous l’impulsion
+                des élus du District de Rennes dès les années 1990. Cette démarche volontaire des élus pour améliorer la
+                prise en compte de la biodiversité à l’échelle de leur territoire a permis d’enrichir de manière notable
+                la connaissance et la répartition des milieux naturels du territoire. Les élus du SCoT ont décidé
+                d’élargir cet inventaire à l’ensemble du territoire du Pays de Rennes.
+                Le SCoT a établi une protection stricte de ces milieux. Depuis son approbation en décembre 2007, ils
+                sont devenus réglementairement inconstructibles. Un document unique « l’Atlas des MNIE du Pays de Rennes
+                » localise l’ensemble des sites identifiés sur le territoire du Pays de Rennes. Le Syndicat mixte du
+                SCoT est désormais la structure qui pilote le dossier des MNIE.
+
+                Cet atlas référence, entre autre :
+                - Les grands ensembles naturels (GEN), espaces sans portée règlementaire ;
+                - Les milieux naturels d’intérêt écologique (MNIE), espaces strictement protégés par le SCOT,
+                qui leur donne un portée règlementaire.
+
+                Cette couche localise les principaux types d'occupation du sol des Milieux Naturels d’Intérêt Ecologique
+                (MNIE).
+
+                On désigne par le sigle MNIE les « Milieux Naturels d’Intérêt Écologique ». Ce sont des sites constitués
+                par un ou plusieurs habitats naturels et présentant un intérêt marqué pour la faune et/ou la flore. Un
+                MNIE est de plus petite surface qu’un GEN, dans lequel il est très souvent inclus. Notons toutefois que
+                certains MNIE peuvent être isolés dans un espace banalisé en dehors d’un GEN. Ces MNIE sont des espaces
+                strictement protégés par le ScoT, qui leur donne une portée règlementaire.
+            </dc:description>
+            <dc:rights>otherRestrictions</dc:rights>
+            <dc:language>fre</dc:language>
+            <dc:source>Aucune information n'a été fournie par le gestionnaire concernant la méthode suivie pour
+                constituer cette couche de données. Contacter l'Audiar pour plus d'information.
+            </dc:source>
+            <dc:format>GML</dc:format>
+            <ows:BoundingBox crs="urn:ogc:def:crs:::RGF93 / CC48 (EPSG:3948)">
+                <ows:LowerCorner>-1.46558 47.93192</ows:LowerCorner>
+                <ows:UpperCorner>-1.96327 48.30684</ows:UpperCorner>
+            </ows:BoundingBox>
+            <dc:URI protocol="OGC:WMS" name="pnat_hab:pdr_mnie_hab_2016" description="Occupation du sol sur les MNIE du Pays de Rennes en 2016"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wms&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="OGC:WFS" name="pnat_hab:pdr_mnie_hab_2016" description="Occupation du sol sur les MNIE du Pays de Rennes en 2016"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="WWW:LINK-1.0-http--link" description="Site open data de Rennes Métropole">
+                https://data.rennesmetropole.fr/explore/dataset/occupation_sol_mnie_pays_de_rennes_2016
+            </dc:URI>
+            <dc:URI protocol="OGC:GML" description="Lien de téléchargement direct (GML3 EPSG:3948)"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;version=2.0.0&amp;request=getfeature&amp;typename=pnat_hab:pdr_mnie_hab_2016&amp;srsname=EPSG:3948&amp;outputformat=GML3&amp;format_options=charset:utf-8
+            </dc:URI>
+            <dc:URI protocol="image/png">
+                http://public.sig.rennesmetropole.fr/ressources/catalogue/apercus/pat_naturel_pdr_mnie_hab_2016.png
+            </dc:URI>
+        </csw:Record>
+        <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ows="http://www.opengis.net/ows"
+            xmlns:dct="http://purl.org/dc/terms/">
+            <dc:identifier>c1537a99-733a-49c5-b838-b4f4ca5a3e67</dc:identifier>
+            <dc:date>2023-04-27T09:50:14</dc:date>
+            <dc:title>Espèces floristiques patrimoniales dans les MNIE sur le Pays de Rennes en 2016</dc:title>
+            <dc:type>dataset</dc:type>
+            <dc:subject>Habitats et biotopes</dc:subject>
+            <dc:subject>protection de la faune et de la flore</dc:subject>
+            <dc:subject>écologie du paysage</dc:subject>
+            <dc:subject>biotope</dc:subject>
+            <dc:subject>réseau de biotope</dc:subject>
+            <dc:subject>zone sensible (écologie)</dc:subject>
+            <dc:subject>protection de biotope</dc:subject>
+            <dc:subject>patrimoine naturel : habitats et biotopes</dc:subject>
+            <dc:subject>données ouvertes</dc:subject>
+            <dc:subject>biota</dc:subject>
+            <dc:format>GML</dc:format>
+            <dct:modified>2016-10-24</dct:modified>
+            <dct:abstract>L’inventaire des Milieux Naturels d’Intérêt Ecologique (MNIE) a été lancé sous l’impulsion des
+                élus du District de Rennes dès les années 1990. Cette démarche volontaire des élus pour améliorer la
+                prise en compte de la biodiversité à l’échelle de leur territoire a permis d’enrichir de manière notable
+                la connaissance et la répartition des milieux naturels du territoire. Les élus du SCoT ont décidé
+                d’élargir cet inventaire à l’ensemble du territoire du Pays de Rennes.
+                Le SCoT a établi une protection stricte de ces milieux. Depuis son approbation en décembre 2007, ils
+                sont devenus réglementairement inconstructibles. Un document unique « l’Atlas des MNIE du Pays de Rennes
+                » localise l’ensemble des sites identifiés sur le territoire du Pays de Rennes. Le Syndicat mixte du
+                SCoT est désormais la structure qui pilote le dossier des MNIE.
+
+                Cet atlas référence, entre autre :
+                - Les grands ensembles naturels (GEN), espaces sans portée règlementaire ;
+                - Les milieux naturels d’intérêt écologique (MNIE), espaces strictement protégés par le SCOT,
+                qui leur donne un portée règlementaire.
+
+                Dans le cadre de l'inventaire des espaces naturels d'intérêt faunistique, cette couche localise les
+                espèces floristiques patrimoniales et d'intérêt régional.
+
+                On désigne par le sigle MNIE les « Milieux Naturels d’Intérêt Écologique ». Ce sont des sites constitués
+                par un ou plusieurs habitats naturels et présentant un intérêt marqué pour la faune et/ou la flore. Un
+                MNIE est de plus petite surface qu’un GEN, dans lequel il est très souvent inclus. Notons toutefois que
+                certains MNIE peuvent être isolés dans un espace banalisé en dehors d’un GEN. Ces MNIE sont des espaces
+                strictement protégés par le ScoT, qui leur donne une portée règlementaire.
+            </dct:abstract>
+            <dc:description>L’inventaire des Milieux Naturels d’Intérêt Ecologique (MNIE) a été lancé sous l’impulsion
+                des élus du District de Rennes dès les années 1990. Cette démarche volontaire des élus pour améliorer la
+                prise en compte de la biodiversité à l’échelle de leur territoire a permis d’enrichir de manière notable
+                la connaissance et la répartition des milieux naturels du territoire. Les élus du SCoT ont décidé
+                d’élargir cet inventaire à l’ensemble du territoire du Pays de Rennes.
+                Le SCoT a établi une protection stricte de ces milieux. Depuis son approbation en décembre 2007, ils
+                sont devenus réglementairement inconstructibles. Un document unique « l’Atlas des MNIE du Pays de Rennes
+                » localise l’ensemble des sites identifiés sur le territoire du Pays de Rennes. Le Syndicat mixte du
+                SCoT est désormais la structure qui pilote le dossier des MNIE.
+
+                Cet atlas référence, entre autre :
+                - Les grands ensembles naturels (GEN), espaces sans portée règlementaire ;
+                - Les milieux naturels d’intérêt écologique (MNIE), espaces strictement protégés par le SCOT,
+                qui leur donne un portée règlementaire.
+
+                Dans le cadre de l'inventaire des espaces naturels d'intérêt faunistique, cette couche localise les
+                espèces floristiques patrimoniales et d'intérêt régional.
+
+                On désigne par le sigle MNIE les « Milieux Naturels d’Intérêt Écologique ». Ce sont des sites constitués
+                par un ou plusieurs habitats naturels et présentant un intérêt marqué pour la faune et/ou la flore. Un
+                MNIE est de plus petite surface qu’un GEN, dans lequel il est très souvent inclus. Notons toutefois que
+                certains MNIE peuvent être isolés dans un espace banalisé en dehors d’un GEN. Ces MNIE sont des espaces
+                strictement protégés par le ScoT, qui leur donne une portée règlementaire.
+            </dc:description>
+            <dc:rights>otherRestrictions</dc:rights>
+            <dc:language>fre</dc:language>
+            <dc:source>Aucune information n'a été fournie par le gestionnaire concernant la méthode suivie pour
+                constituer cette couche de données. Contacter l'Audiar pour plus d'information.
+            </dc:source>
+            <dc:format>GML</dc:format>
+            <ows:BoundingBox crs="urn:ogc:def:crs:::RGF93 / CC48 (EPSG:3948)">
+                <ows:LowerCorner>-1.46558 47.93192</ows:LowerCorner>
+                <ows:UpperCorner>-1.96327 48.30684</ows:UpperCorner>
+            </ows:BoundingBox>
+            <dc:URI protocol="OGC:WMS" name="pnat_hab:pdr_mnie_flore_2016" description="Espèces floristiques patrimoniales MNIE 2016"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wms&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="OGC:WFS" name="pnat_hab:pdr_mnie_flore_2016" description="Espèces floristiques patrimoniales MNIE 2016"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="WWW:DOWNLOAD-1.0-http--download" description="Site open data de Rennes Métropole">
+                https://data.rennesmetropole.fr/explore/dataset/flore_mnie_pays_de_rennes_2016
+            </dc:URI>
+            <dc:URI protocol="OGC:GML" description="Lien de téléchargement direct (GML3 EPSG:3948)"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;version=2.0.0&amp;request=getfeature&amp;typename=pnat_hab:pdr_mnie_flore_2016&amp;srsname=EPSG:3948&amp;outputformat=GML3&amp;format_options=charset:utf-8
+            </dc:URI>
+            <dc:URI protocol="image/png">
+                http://public.sig.rennesmetropole.fr/ressources/catalogue/apercus/pnat_hab_pdr_mnie_flore_2016.png
+            </dc:URI>
+        </csw:Record>
+        <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ows="http://www.opengis.net/ows"
+            xmlns:dct="http://purl.org/dc/terms/">
+            <dc:identifier>3d03f883-cc9e-4e63-bf3b-bc28b4471af3</dc:identifier>
+            <dc:date>2021-01-04T11:55:24</dc:date>
+            <dc:title>Panneaux d'information gérés par la Direction des Jardins sur le territoire de la Ville de
+                Rennes
+            </dc:title>
+            <dc:type>dataset</dc:type>
+            <dc:subject>Installations agricoles et aquacoles</dc:subject>
+            <dc:subject>parcs et jardins publics</dc:subject>
+            <dc:subject>espace public : mobilier urbain</dc:subject>
+            <dc:subject>données ouvertes</dc:subject>
+            <dc:subject>structure</dc:subject>
+            <dc:format>GML</dc:format>
+            <dct:modified>2020-10-01</dct:modified>
+            <dct:abstract>Positionnement de l'ensemble des panneaux propres aux espaces gérés par la Direction des
+                Jardins sur le territoire de la Ville de Rennes.
+                Mobilier dont la nature est décrite par typologie d'usages : signalétique, règlement, plans,
+                communication, dénomination, etc.
+            </dct:abstract>
+            <dc:description>Positionnement de l'ensemble des panneaux propres aux espaces gérés par la Direction des
+                Jardins sur le territoire de la Ville de Rennes.
+                Mobilier dont la nature est décrite par typologie d'usages : signalétique, règlement, plans,
+                communication, dénomination, etc.
+            </dc:description>
+            <dc:rights>otherRestrictions</dc:rights>
+            <dc:rights>license</dc:rights>
+            <dc:language>fre</dc:language>
+            <dc:source>Numérisation réalisée sur appui des objets présents dans le Référentiel Métropolitation
+                Topographie et Réseaux de Rennes Métropole.
+            </dc:source>
+            <dc:format>GML</dc:format>
+            <ows:BoundingBox crs="urn:ogc:def:crs:::RGF93 / CC48 (EPSG:3948)">
+                <ows:LowerCorner>-1.61818 48.07348</ows:LowerCorner>
+                <ows:UpperCorner>-1.75832 48.15504</ows:UpperCorner>
+            </ows:BoundingBox>
+            <dc:URI protocol="OGC:WMS" name="espub_mob:gev_pann" description="Panneaux d'information gérés par la Direction des Jardins sur le territoire de la Ville de Rennes"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wms&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="OGC:WFS" name="espub_mob:gev_pann" description="Panneaux d'information gérés par la Direction des Jardins sur le territoire de la Ville de Rennes"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="WWW:LINK-1.0-http--link" description="Site open data de Rennes Métropole">
+                https://data.rennesmetropole.fr/explore/dataset/gev_pann_vdr
+            </dc:URI>
+            <dc:URI protocol="OGC:GML" description="Lien de téléchargement direct (GML3 EPSG:3948)"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;version=2.0.0&amp;request=getfeature&amp;typename=espub_mob:gev_pann&amp;srsname=EPSG:3948&amp;outputformat=GML3&amp;format_options=charset:utf-8
+            </dc:URI>
+            <dc:URI protocol="image/png">
+                https://public.sig.rennesmetropole.fr/ressources/catalogue/apercus/espub_esv_gev_pann.png
+            </dc:URI>
+        </csw:Record>
+        <csw:Record xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ows="http://www.opengis.net/ows"
+            xmlns:dct="http://purl.org/dc/terms/">
+            <dc:identifier>5c2e0578-5e4b-476e-b560-76641a4b374e</dc:identifier>
+            <dc:date>2017-02-20T14:51:35</dc:date>
+            <dc:title>Centres de vote sur Rennes Métropole</dc:title>
+            <dc:type>dataset</dc:type>
+            <dc:subject>Services d'utilité publique et services publics</dc:subject>
+            <dc:subject>vote</dc:subject>
+            <dc:subject>services et équipements publics : éducation enseignement social et citoyenneté</dc:subject>
+            <dc:subject>données ouvertes</dc:subject>
+            <dc:subject>utilitiesCommunication</dc:subject>
+            <dc:format>ESRI Shapefile</dc:format>
+            <dct:modified>2017-02-17</dct:modified>
+            <dct:abstract>Localisation des centres de vote sur les communes de Rennes Métropole.
+                Un centre de vote abrite un ou plusieurs bureaux de vote identifié(s) par leur numéro. Figurent
+                également des précisions sur leur localisation (adresse et bâtiment).
+            </dct:abstract>
+            <dc:description>Localisation des centres de vote sur les communes de Rennes Métropole.
+                Un centre de vote abrite un ou plusieurs bureaux de vote identifié(s) par leur numéro. Figurent
+                également des précisions sur leur localisation (adresse et bâtiment).
+            </dc:description>
+            <dc:rights>otherRestrictions</dc:rights>
+            <dc:rights>license</dc:rights>
+            <dc:language>fre</dc:language>
+            <dc:source>Sur Rennes, la numérisation s'appuie sur la couche des équipements.
+
+                Pour les autres communes de Rennes Métropole, les données sont recueillies et validées auprès des
+                communes. La numérisation s'appuie sur le Plan de Ville Communal et Intercommunal (PVCI) et/ou
+                l'orthophotographie disponible à la date de mise à jour.
+            </dc:source>
+            <dc:format>ESRI Shapefile</dc:format>
+            <ows:BoundingBox crs="urn:ogc:def:crs:::RGF93 / CC48 (EPSG:3948)">
+                <ows:LowerCorner>-1.46558 47.93192</ows:LowerCorner>
+                <ows:UpperCorner>-1.96327 48.30684</ows:UpperCorner>
+            </ows:BoundingBox>
+            <dc:URI protocol="OGC:WMS" name="eq_educ:v_election_centre" description="Centres de vote sur Rennes Métropole"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wms&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="OGC:WFS" name="eq_educ:v_election_centre" description="Centres de vote sur Rennes Métropole"> https://public.sig.rennesmetropole.fr/geoserver/ows?service=wfs&amp;request=GetCapabilities
+            </dc:URI>
+            <dc:URI protocol="WWW:DOWNLOAD-1.0-http--download" description="Site open data de Rennes Métropole">
+                https://data.rennesmetropole.fr/explore/dataset/centres-de-vote/
+            </dc:URI>
+            <dc:URI protocol="image/png">
+                http://public.sig.rennesmetropole.fr/ressources/catalogue/apercus/eq_educ_v_election_centre.png
+            </dc:URI>
+        </csw:Record>
+    </csw:SearchResults>
+</csw:GetRecordsResponse>
