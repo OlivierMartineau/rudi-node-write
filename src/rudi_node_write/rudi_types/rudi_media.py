@@ -413,8 +413,10 @@ class RudiMediaFile(RudiMedia):
         self.file_status_update = Date.now_iso_str()
 
     @staticmethod
-    def from_local_file(file_local_path: str, media_id: str | None = uuid4_str(), file_url: str = "to_be_provided"):
+    def from_local_file(file_local_path: str, media_id: str | None = None, file_url: str = "to_be_provided"):
         here = f"{RudiMediaFile}.from_local_file"
+        if media_id is None:
+            media_id = uuid4_str()
         file_info = FileDetails(file_local_path)
         log_d(here, "file_info", file_info)
         return RudiMediaFile(
