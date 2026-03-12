@@ -1125,7 +1125,7 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
     def post_local_file(
         self,
         file_local_path: str,
-        media_id: str = uuid4_str(),
+        media_id: str | None = None,
         rudi_media: RudiMediaFile | None = None,
     ) -> RudiMediaFile:
         """
@@ -1134,6 +1134,9 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
         :return:
         """
         here = f"{self.class_name}.post_local_file"
+
+        if media_id is None:
+            media_id = uuid4_str()
 
         if rudi_media is None:
             rudi_media = RudiMediaFile.from_local_file(file_local_path, media_id)
@@ -1336,6 +1339,9 @@ class RudiNodeStorageConnectorV3(Connector):
         # :param file_type: the MIME type of the file
         # :param charset: the encoding of the file
         here = f"{self.class_name}.post_local_file"
+
+        if media_id is None:
+            media_id = uuid4_str()
 
         if rudi_media is None:
             rudi_media = RudiMediaFile.from_local_file(file_local_path, media_id)

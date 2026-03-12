@@ -16,7 +16,7 @@ from rudi_node_write.utils.dict_utils import (
 )
 from rudi_node_write.utils.file_utils import read_json_file
 from rudi_node_write.utils.log import log_d
-from rudi_node_write.utils.str_utils import absolute_path, check_is_string, check_is_uuid4, slash_join, uuid4_str
+from rudi_node_write.utils.str_utils import absolute_path, check_is_string, check_is_uuid4, slash_join
 from rudi_node_write.utils.type_date import Date
 
 _USER_AGENT_DEFAULT = "RudiNodeWriter"
@@ -487,7 +487,7 @@ class RudiNodeWriter:
     def post_local_file_and_media_info(
         self,
         file_local_path: str,
-        media_id: str = uuid4_str(),
+        media_id: str | None = None,
         rudi_media: RudiMediaFile | None = None,
     ) -> RudiMediaFile:
         """
