@@ -2,35 +2,42 @@ from os.path import isdir
 from time import time
 from urllib.parse import quote
 
-
 from rudi_node_write.connectors.io_connector import Connector, https_download
 from rudi_node_write.connectors.io_rudi_jwt_factory import RudiNodeJwtFactory
-from rudi_node_write.rudi_types.rudi_const import MEDIA_TYPE_FILE, RUDI_OBJECT_TYPES, RudiObjectTypeStr
+from rudi_node_write.rudi_types.rudi_const import (
+    MEDIA_TYPE_FILE,
+    RUDI_OBJECT_TYPES,
+    RudiObjectTypeStr,
+)
 from rudi_node_write.rudi_types.rudi_contact import RudiContact
-from rudi_node_write.rudi_types.rudi_media import RudiMediaService, RudiMediaFile
+from rudi_node_write.rudi_types.rudi_media import RudiMediaFile, RudiMediaService
 from rudi_node_write.rudi_types.rudi_meta import RudiMetadata
 from rudi_node_write.rudi_types.rudi_org import RudiOrganization
 from rudi_node_write.rudi_types.serializable import Serializable
 from rudi_node_write.utils.dict_utils import (
-    safe_get_key,
-    pick_in_dict,
     merge_dict_of_list,
+    pick_in_dict,
+    safe_get_key,
 )
 from rudi_node_write.utils.err import (
     ExpiredTokenException,
-    UnexpectedValueException,
-    NoNullException,
     HttpError,
     HttpErrorNotFound,
+    NoNullException,
+    UnexpectedValueException,
 )
 from rudi_node_write.utils.file_utils import read_json_file, write_file
 from rudi_node_write.utils.jwt import is_jwt_expired
 from rudi_node_write.utils.list_utils import get_first_list_elt_or_none
 from rudi_node_write.utils.log import log_d, log_e, log_w
-from rudi_node_write.utils.str_utils import absolute_path, slash_join, uuid4_str, is_uuid_v4
+from rudi_node_write.utils.str_utils import (
+    absolute_path,
+    is_uuid_v4,
+    slash_join,
+    uuid4_str,
+)
 from rudi_node_write.utils.typing_utils import get_type_name
 from rudi_node_write.utils.url_utils import ensure_url_startswith
-
 
 REQ_LIMIT = 500
 _DELAY_REFRESH_S = 60  # seconds
@@ -44,7 +51,7 @@ here = "RudiNodeCatalogConnector"
 
 
 def ensure_url_startswith_api_admin(url):
-    return ensure_url_startswith(url, "api/admin")
+    return ensure_url_startswith(url, "catalog/admin")
 
 
 class RudiNodeCatalogConnector(Connector):

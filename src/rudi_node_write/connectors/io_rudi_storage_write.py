@@ -5,11 +5,9 @@ from typing import BinaryIO, TextIO
 from urllib.parse import quote
 
 from rudi_node_write.connectors.io_connector import Connector
-from rudi_node_write.connectors.io_rudi_manager_write import RudiNodeManagerConnector
 from rudi_node_write.connectors.rudi_node_auth import RudiNodeAuth
 from rudi_node_write.rudi_types.rudi_const import MEDIA_TYPE_FILE, MIME_TYPES_UTF8_TEXT
-from rudi_node_write.utils.file_utils import read_json_file, FileDetails
-from rudi_node_write.utils.jwt import get_basic_auth
+from rudi_node_write.utils.file_utils import FileDetails, read_json_file
 from rudi_node_write.utils.log import log_d, log_w
 from rudi_node_write.utils.str_utils import slash_join, uuid4_str
 from rudi_node_write.utils.url_utils import ensure_url_startswith
@@ -223,7 +221,7 @@ if __name__ == "__main__":  # pragma: no cover
         "eeeeeeee-3233-4541-855e-55de7086b40c",
     ]
     text_file = "unicode_chars.txt"
-    yaml_file = "RUDI producer internal API - 1.3.0.yml"
+    yaml_file = "RUDI node API.yml"
     for i, f in enumerate([text_file, yaml_file]):
         upload_res = rudi_media.post_local_media_file(dwnld_dir + f, media_uuid[i])
         log_d(tests, f"File '{f}' now available at", upload_res)

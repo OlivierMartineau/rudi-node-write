@@ -5,7 +5,6 @@ from re import Pattern, compile
 from time import time
 
 from rudi_node_write.utils.log import log_e
-from rudi_node_write.utils.typing_utils import is_def
 
 REGEX_JWT: Pattern = compile(r"^([\w-]+\.){2}[\w-]+$")
 
@@ -68,10 +67,3 @@ def is_jwt_expired(jwt) -> bool:
     except ValueError as e:
         log_e("is_jwt_expired", f"this is not a JWT: '{jwt}'", e)
         return True
-
-
-if __name__ == "__main__":  # pragma: no cover
-    for arg in ["testing", "YrmFjpOshYMxl0tth73NhYmtl4GFzew"]:
-        print("* is_base64_url", f"'{arg}'? ->", is_base64_url(arg))
-        arg = pad_b64_str(arg)
-        print("* is_base64_url", f"'{arg}'? ->", is_base64_url(arg))

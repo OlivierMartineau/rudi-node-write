@@ -3,13 +3,15 @@ from ssl import SSLCertVerificationError
 from time import time
 
 from rudi_node_write.connectors.io_connector import HttpError
-from rudi_node_write.connectors.io_rudi_manager_write import RudiNodeManagerConnector, RudiNodeStorageConnector
+from rudi_node_write.connectors.io_rudi_manager_write import (
+    RudiNodeManagerConnector,
+    RudiNodeStorageConnector,
+)
 from rudi_node_write.connectors.rudi_node_auth import RudiNodeAuth
 from rudi_node_write.utils.file_utils import read_json_file
 from rudi_node_write.utils.log import log_d, log_w
 from rudi_node_write.utils.str_utils import slash_join
 from rudi_node_write.utils.url_utils import ensure_url_startswith
-
 
 # Defaults for constructor
 _DEFAULT_USER_AGENT = "RudiNodeManagerConnectorV2"
@@ -101,7 +103,7 @@ if __name__ == "__main__":  # pragma: no cover
         "eeeeeeee-3233-4541-855e-55de7086b40f",
     ]
     text_file = "unicode_chars.txt"
-    yaml_file = "RUDI producer internal API - 1.3.0.yml"
+    yaml_file = "RUDI node API.yml"
     for i, f in enumerate([text_file, yaml_file]):
         try:
             upload_res = pm_connector.post_local_file(slash_join(dwnld_dir, f), media_uuid[i])

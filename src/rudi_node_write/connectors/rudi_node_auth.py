@@ -22,10 +22,10 @@ class RudiNodeAuth(Serializable):
                 raise ValueError("The input `b64url_auth` should be a urlsafe-base64 string.")
             try:
                 self.usr, self.pwd = urlsafe_b64decode(b64url_auth).decode("utf-8").split(":")
-            except:
+            except Exception as e:
                 raise ValueError(
                     "The input `b64url_auth` should be a urlsafe-base64 string that encodes a `usr:pwd` string couple"
-                )
+                ) from e
         elif usr is not None and pwd is not None:
             self.usr = usr
             self.pwd = pwd

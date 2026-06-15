@@ -18,17 +18,31 @@ from rudi_node_write.rudi_types.rudi_media import RudiMediaFile, RudiMediaServic
 from rudi_node_write.rudi_types.rudi_meta import RudiMetadata
 from rudi_node_write.rudi_types.rudi_org import RudiOrganization
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, merge_dict_of_list, pick_in_dict, safe_get_key
-from rudi_node_write.utils.err import HttpError, HttpErrorNotFound, UnexpectedValueException
+from rudi_node_write.utils.dict_utils import (
+    check_is_dict,
+    merge_dict_of_list,
+    pick_in_dict,
+    safe_get_key,
+)
+from rudi_node_write.utils.err import (
+    HttpError,
+    HttpErrorNotFound,
+    UnexpectedValueException,
+)
 from rudi_node_write.utils.file_utils import check_is_file, read_json_file, write_file
 from rudi_node_write.utils.jwt import is_jwt_expired
 from rudi_node_write.utils.list_utils import get_first_list_elt_or_none
 from rudi_node_write.utils.log import log_d, log_e, log_w
-from rudi_node_write.utils.str_utils import absolute_path, check_is_uuid4, is_uuid_v4, slash_join, uuid4_str
+from rudi_node_write.utils.str_utils import (
+    absolute_path,
+    check_is_uuid4,
+    is_uuid_v4,
+    slash_join,
+    uuid4_str,
+)
 from rudi_node_write.utils.type_date import Date
 from rudi_node_write.utils.typing_utils import check_is_int, get_type_name
 from rudi_node_write.utils.url_utils import ensure_url_startswith
-
 
 # Defaults for constructor
 _DEFAULT_USER_AGENT = "RudiNodeManagerConnector"
@@ -195,6 +209,7 @@ class RudiNodeManagerConnector(Connector):
             self.get_api(url="data/uuid", headers=self._manager_headers)
         except HttpError:
             raise ConnectionError(f"Identifiers seem to be not working for the node: {self.server_url}")
+        return True
 
     @property
     def api_version(self):
@@ -298,7 +313,7 @@ class RudiNodeManagerConnector(Connector):
 
     @property
     def _storage_jwt(self) -> str:
-        here = "_media_jwt"
+        # here = "_media_jwt"
         if is_jwt_expired(self._cached_media_jwt):
             res = self.get_api(url="media/jwt", headers=self._manager_headers)
 
@@ -519,7 +534,7 @@ class RudiNodeManagerConnector(Connector):
         if not self._gen == 1:
             try:
                 list_medias = self.get_data("media")
-            except:
+            except Exception:
                 log_w(here, f"Cannot acces /data/media on node {self.base_url}")
                 self._gen = 1
 
@@ -1402,7 +1417,7 @@ if __name__ == "__main__":  # pragma: no cover
         "eeeeeeee-3233-4541-855e-55de7086b40f",
     ]
     text_file = "unicode_chars.txt"
-    yaml_file = "RUDI producer internal API - 1.3.0.yml"
+    yaml_file = "RUDI node API.yml"
     for i, f in enumerate([text_file, yaml_file]):
         try:
             upload_res = pm_connector.post_local_file(slash_join(dwnld_dir, f), media_uuid[i])

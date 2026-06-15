@@ -2,22 +2,22 @@ import pytest
 
 from rudi_node_write.rudi_types.serializable import is_serializable
 from rudi_node_write.utils.file_utils import (
-    exists_file,
-    get_file_hash,
-    is_file,
-    is_dir,
+    FileDetails,
     check_is_dir,
     check_is_file,
-    get_file_size,
-    get_file_extension,
-    get_file_mime,
+    exists_file,
     get_file_charset,
-    FileDetails,
+    get_file_extension,
+    get_file_hash,
+    get_file_mime,
+    get_file_size,
+    is_dir,
+    is_file,
 )
 
 TEST_FILES_DIR = "./tests/_test_files"
-YAML_FILE_PATH = f"{TEST_FILES_DIR}/RUDI producer internal API - 1.3.0.yml"
-YAML_FILE_SIZE = 91057
+YAML_FILE_PATH = f"{TEST_FILES_DIR}/RUDI node API.yml"
+YAML_FILE_SIZE = 76685
 PY_FILE_PATH = "./src/rudi_node_write/utils/file_utils.py"
 CSV_FILE_PATH = f"{TEST_FILES_DIR}/dummy.csv"
 
@@ -64,7 +64,7 @@ def test_get_file_mime():
     assert get_file_mime(PY_FILE_PATH) == "text/x-python"
     assert get_file_mime(CSV_FILE_PATH) == "text/csv"
     assert get_file_mime("pyproject.toml") == "application/toml"
-    assert get_file_mime("README.md") == "text/plain"
+    assert get_file_mime("README.md") == "text/markdown"
     with pytest.raises(FileNotFoundError):
         assert get_file_mime("test")
 
@@ -72,15 +72,15 @@ def test_get_file_mime():
 def test_get_file_charset():
     assert get_file_charset(YAML_FILE_PATH) == "utf-8"
     assert get_file_charset(PY_FILE_PATH) == "utf-8"
-    assert get_file_charset("pyproject.toml") == None
+    assert get_file_charset("pyproject.toml") is None
     assert get_file_charset("README.md") == "ascii"
     with pytest.raises(FileNotFoundError):
         assert get_file_charset("test")
 
 
-file_md5 = "74a5eb840b1e8e1a47fd40ea7fd69f99"
-file_256 = "55b17eaa3a1115f22bdafd7654d94568a5a0e39cafef740595693a7c884dea9e"
-file_512 = "600608d0640145b980616e9fd4fa0c2c97877c7f561ea4d3110aa1a5c18aa5dbe3fcaf2274e507a23594f313c41fda86bd38cacf4fbae5e6ff83c2a5336cfab3"
+file_md5 = "bc2078171f346925337ee09d826b257b"
+file_256 = "1a1e8bffeebd6d07be458137ec3386bd482b06e450dd172b09b45488a246ed70"
+file_512 = "6f9e06a8458355da3c1cc53322e3489454f39f49acef7751b375bc244476e88a113865c53cbcf96bd24c69e4001d4fffd32838f791fb84b3c4a44e3097322be4"
 
 
 def test_get_file_hash():
@@ -98,7 +98,7 @@ def test_FileDetails():
     file_info = FileDetails(YAML_FILE_PATH)
     assert is_serializable(file_info)
     assert file_info.path == YAML_FILE_PATH
-    assert file_info.name == "RUDI producer internal API - 1.3.0.yml"
+    assert file_info.name == "RUDI node API.yml"
     assert file_info.extension == ".yml"
     assert file_info.mime == "text/x-yaml"
     assert file_info.charset == "utf-8"
