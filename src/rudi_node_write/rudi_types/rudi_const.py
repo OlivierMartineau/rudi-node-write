@@ -1,5 +1,5 @@
 from re import compile
-from typing import Literal, get_args, Final
+from typing import Final, Literal, get_args
 
 from rudi_node_write.utils.err import LiteralUnexpectedValueException
 

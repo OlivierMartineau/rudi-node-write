@@ -4,27 +4,37 @@ from json import dumps
 from deepdiff import DeepDiff
 
 from rudi_node_write.rudi_types.rudi_const import (
-    FileStorageStatus,
-    HashAlgorithm,
-    HASH_ALGORITHMS,
-    MediaType,
-    check_is_literal,
+    CONNECTOR_PARAMS_TYPES,
     FILE_STORAGE_STATUSES,
+    HASH_ALGORITHMS,
     MEDIA_TYPE_FILE,
     MEDIA_TYPE_SERVICE,
     MIME_TYPES,
-    CONNECTOR_PARAMS_TYPES,
+    FileStorageStatus,
+    HashAlgorithm,
+    MediaType,
+    check_is_literal,
     check_is_literal_or_none,
 )
 from rudi_node_write.rudi_types.rudi_dates import RudiDates
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.file_utils import FileDetails
 from rudi_node_write.utils.list_utils import check_is_list_or_none
 from rudi_node_write.utils.log import log_d
-from rudi_node_write.utils.str_utils import check_is_string_or_none, check_is_uuid4, check_is_string, uuid4_str
+from rudi_node_write.utils.str_utils import (
+    check_is_string,
+    check_is_string_or_none,
+    check_is_uuid4,
+    uuid4_str,
+)
 from rudi_node_write.utils.type_date import Date
-from rudi_node_write.utils.typing_utils import check_is_int, does_inherit_from, get_type_name, check_type
+from rudi_node_write.utils.typing_utils import (
+    check_is_int,
+    check_type,
+    does_inherit_from,
+    get_type_name,
+)
 
 NORMALIZED_CONNECTOR_PARAMS_TYPES = {
     "STR": "STRING",
@@ -59,6 +69,26 @@ def get_normalized_type_name(value):
     return get_type_name(value)
 
 
+def _cast_val(value, value_type):
+    try:
+        # Check if value can be cast to the expected type
+        if value_type == "LONG":
+            int(value)
+        elif value_type == "DOUBLE":
+            float(value)
+        elif value_type == "BOOLEAN":
+            if not (isinstance(value, bool) or (isinstance(value, str) and value.lower() in ("true", "false"))):
+                raise ValueError()
+        elif value_type == "STRING":
+            str(value)
+        else:
+            # Fallback to existing type check if not one of the primary castable types
+            if normalize_connector_parameter_type(get_normalized_type_name(value)) != value_type:
+                raise ValueError()
+    except (ValueError, TypeError):
+        raise ValueError(f"incoherence in connector parameter type: input '{value}' is not of type '{value_type}'")
+
+
 def normalize_connector_values(value, value_type: str | None = None, accepted_values: list | None = None):
     if value_type is None:
         type_name = get_type_name(value)
@@ -73,8 +103,7 @@ def normalize_connector_values(value, value_type: str | None = None, accepted_va
     else:
         # log_d(here, "in", value, f"({value_type})")
         normalized_val_type = normalize_connector_parameter_type(value_type)
-        if normalize_connector_parameter_type(get_normalized_type_name(value)) != normalized_val_type:
-            raise ValueError(f"incoherence in connector parameter type: input '{value}' is not of type '{value_type}'")
+        _cast_val(value=value, value_type=normalized_val_type)
         return [check_is_accepted_value(value, accepted_values), normalized_val_type, accepted_values]
 
 

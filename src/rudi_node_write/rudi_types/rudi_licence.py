@@ -1,18 +1,22 @@
 from abc import ABC
 
 from rudi_node_write.rudi_types.rudi_const import (
-    LICENCE_TYPE_STANDARD,
+    LICENCE_CODES,
     LICENCE_TYPE_CUSTOM,
+    LICENCE_TYPE_STANDARD,
     LicenceCode,
     check_is_literal,
-    LICENCE_CODES,
 )
 from rudi_node_write.rudi_types.rudi_dictionary_entry import RudiDictionaryEntryList
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.str_utils import check_is_string
-from rudi_node_write.utils.typing_utils import check_is_bool_or_none, check_type, check_type_or_null
+from rudi_node_write.utils.typing_utils import (
+    check_is_bool_or_none,
+    check_type,
+    check_type_or_null,
+)
 
 
 class RudiLicence(Serializable, ABC):

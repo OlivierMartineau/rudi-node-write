@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_has_key, safe_get_key, check_is_dict
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict, safe_get_key
 from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.str_utils import check_is_uuid4, uuid4_str
 

@@ -3,12 +3,12 @@ from uuid import UUID
 from rudi_node_write.conf.meta_defaults import RUDI_API_VERSION
 from rudi_node_write.rudi_types.rudi_const import (
     METADATA_STATUSES,
-    StorageStatus,
-    Language,
-    check_is_literal,
     RECOGNIZED_LANGUAGES,
     STORAGE_STATUSES,
+    Language,
+    StorageStatus,
     ThemeTranslation,
+    check_is_literal,
     check_is_literal_or_none,
 )
 from rudi_node_write.rudi_types.rudi_contact import RudiContact
@@ -16,16 +16,33 @@ from rudi_node_write.rudi_types.rudi_dates import RudiDates
 from rudi_node_write.rudi_types.rudi_dictionary_entry import RudiDictionaryEntryList
 from rudi_node_write.rudi_types.rudi_geo import RudiGeography
 from rudi_node_write.rudi_types.rudi_licence import RudiAccessCondition, RudiLicence
-from rudi_node_write.rudi_types.rudi_media import RudiMedia, RudiMediaService, RudiMediaFile
-from rudi_node_write.rudi_types.rudi_meta_misc import RudiMetadataInfo, RudiDatasetSize, RudiDataTemporalSpread
+from rudi_node_write.rudi_types.rudi_media import (
+    RudiMedia,
+    RudiMediaFile,
+    RudiMediaService,
+)
+from rudi_node_write.rudi_types.rudi_meta_misc import (
+    RudiDatasetSize,
+    RudiDataTemporalSpread,
+    RudiMetadataInfo,
+)
 from rudi_node_write.rudi_types.rudi_org import RudiOrganization
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.list_utils import ensure_is_str_list
 from rudi_node_write.utils.log import log_d
-from rudi_node_write.utils.str_utils import check_is_string_or_none, check_is_uuid4, check_is_string, uuid4_str
+from rudi_node_write.utils.str_utils import (
+    check_is_string,
+    check_is_string_or_none,
+    check_is_uuid4,
+    uuid4_str,
+)
 from rudi_node_write.utils.type_date import Date
-from rudi_node_write.utils.typing_utils import check_type_or_null, get_type_name, check_type
+from rudi_node_write.utils.typing_utils import (
+    check_type,
+    check_type_or_null,
+    get_type_name,
+)
 
 
 def normalize_theme(theme: str | list) -> str:
@@ -69,7 +86,7 @@ class RudiMetadata(Serializable):
 
         self.resource_title = check_is_string(resource_title)
 
-        self.synopsis: RudiDictionaryEntryList = check_type(synopsis, RudiDictionaryEntryList)  # type:ignore
+        self.synopsis: RudiDictionaryEntryList = check_type(synopsis, RudiDictionaryEntryList)  # type: ignore
         self.summary: RudiDictionaryEntryList = check_type(summary, RudiDictionaryEntryList)
         # TODO clean summary
 
@@ -136,9 +153,9 @@ class RudiMetadata(Serializable):
                 f"incorrect type for contacts attribute, expected 'list', got '{get_type_name(contact_list)}'"
             )
 
-        available_formats: list[RudiMedia] = [
-            RudiMedia.from_json(media) for media in check_has_key(o, "available_formats")
-        ]
+        list_media = o.get("available_formats", [])
+        available_formats: list[RudiMedia] = [RudiMedia.from_json(media) for media in list_media]
+
         dataset_dates = RudiDates.from_json(check_has_key(o, "dataset_dates"))
         storage_status = check_is_literal(check_has_key(o, "storage_status"), STORAGE_STATUSES)
         access_condition = RudiAccessCondition.from_json(check_has_key(o, "access_condition"))

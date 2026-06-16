@@ -85,8 +85,8 @@ def ensure_is_int(n) -> int:
         return n
     try:
         return int(n)
-    except:
-        raise TypeError(f"input parameter of type '{get_type_name(n)}' cannot be cast into an int: '{n}'.")
+    except Exception as e:
+        raise TypeError(f"input parameter of type '{get_type_name(n)}' cannot be cast into an int: '{n}'.") from e
 
 
 def ensure_is_int_or_none(n) -> int | None:
@@ -158,4 +158,4 @@ def is_null(val, strict: bool = False) -> bool:
     if not strict:
         return (not val) or (val in ["null", "None"])
     # log_d("is_null", val, "strict=", strict)
-    return val != 0 and not is_bool(val) and not val and not (val in ["null", "None", "[]", "{}"])
+    return val != 0 and not is_bool(val) and not val and val not in ["null", "None", "[]", "{}"]

@@ -4,7 +4,7 @@ from rudi_node_write.rudi_types.rudi_contact import RudiContact
 from rudi_node_write.rudi_types.rudi_dates import RudiDates
 from rudi_node_write.rudi_types.rudi_org import RudiOrganization
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.type_date import Date
 from rudi_node_write.utils.typing_utils import check_is_int_or_none, get_type_name
