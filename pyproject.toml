@@ -34,7 +34,7 @@ Documentation = "https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-I
 Repository = "https://github.com/OlivierMartineau/rudi-node-write"
 
 [build-system]
-requires = ["setuptools>=67.0"]
+requires = ["setuptools>=82.0.1"]
 build-backend = "setuptools.build_meta"
 
 # ----- Tool: black
