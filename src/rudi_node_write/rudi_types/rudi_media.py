@@ -21,7 +21,7 @@ from rudi_node_write.rudi_types.serializable import Serializable
 from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.file_utils import FileDetails
 from rudi_node_write.utils.list_utils import check_is_list_or_none
-from rudi_node_write.utils.log import log_d
+from rudi_node_write.utils.log import log_d, log_w
 from rudi_node_write.utils.str_utils import (
     check_is_string,
     check_is_string_or_none,
@@ -70,6 +70,7 @@ def get_normalized_type_name(value):
 
 
 def _cast_val(value, value_type):
+    here = "cast_val"
     try:
         # Check if value can be cast to the expected type
         if value_type == "LONG":
@@ -79,14 +80,22 @@ def _cast_val(value, value_type):
         elif value_type == "BOOLEAN":
             if not (isinstance(value, bool) or (isinstance(value, str) and value.lower() in ("true", "false"))):
                 raise ValueError()
+        # elif value_type in ("DICT", "LIST") and isinstance(value, str):
+        #     value = loads(value)
+        elif value_type == "DATE":
+            Date(value)
         elif value_type == "STRING":
             str(value)
         else:
             # Fallback to existing type check if not one of the primary castable types
-            if normalize_connector_parameter_type(get_normalized_type_name(value)) != value_type:
-                raise ValueError()
-    except (ValueError, TypeError):
-        raise ValueError(f"incoherence in connector parameter type: input '{value}' is not of type '{value_type}'")
+            if (norm_type := normalize_connector_parameter_type(get_normalized_type_name(value))) != value_type:
+                log_w(here, f"Input type {value_type} ≠ normalized type {norm_type}")
+                raise ValueError(f"Input type {value_type} ≠ normalized type {norm_type}")
+    except (ValueError, TypeError) as e:
+        log_w(here, f"Failed to cast: input '{value}' is not of type '{value_type}'")
+        raise ValueError(
+            f"incoherence in connector parameter type: input '{value}' is not of type '{value_type}'"
+        ) from e
 
 
 def normalize_connector_values(value, value_type: str | None = None, accepted_values: list | None = None):
@@ -552,7 +561,7 @@ if __name__ == "__main__":  # pragma: no cover
         {
             "key": "random key",
             "value": {"e": "value is a dict and will be stringified"},
-            # "type": "dict",
+            "type": "dict",
             "usage": "test",
             "accepted_values": [{"e": "value is a dict and will be stringified"}],
         }
