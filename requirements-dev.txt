@@ -50,7 +50,7 @@ watchfiles==1.1.0
 websockets==15.0.1
 # aenum==3.1.16 # Installed as dependency for onlykey
 # annotated-types==0.7.0 # Installed as dependency for pydantic
-# anyio==4.9.0 # Installed as dependency for httpx, starlette, watchfiles
+# anyio==4.14.0 # Installed as dependency for httpx, starlette, watchfiles
 # appnope==0.1.4 # Installed as dependency for ipykernel
 # argcomplete==3.6.2 # Installed as dependency for commitizen
 # asttokens==3.0.0 # Installed as dependency for stack-data
