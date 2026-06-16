@@ -1,10 +1,9 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from re import compile
 from time import time
 from typing import Literal
 
 from rudi_node_write.rudi_types.serializable import Serializable
-
 
 REGEX_ISO_FULL_DATE = compile(
     r"^([+-]?[1-9]\d{3})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12]\d)T(2[0-3]|[01]\d):([0-5]\d):([0-5]\d)(?:\.(\d{3}))?("
@@ -154,6 +153,10 @@ class Date(Serializable):
     @staticmethod
     def now_iso():
         return Date(Date.now_iso_str())
+
+    @staticmethod
+    def now_file_tag() -> str:
+        return datetime.now().strftime("%Y%m%d_%H%M%S")
 
     @staticmethod
     def is_iso_full_date_str(date_str: str) -> bool:

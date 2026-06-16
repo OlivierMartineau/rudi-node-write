@@ -1,20 +1,19 @@
 from copy import deepcopy
 from json import dumps
 
-from deepdiff.diff import DeepDiff
 import pytest
+from deepdiff.diff import DeepDiff
 
 from rudi_node_write.rudi_types.rudi_media import (
+    RudiChecksum,
     RudiMedia,
-    RudiMediaFile,
-    RudiMediaService,
+    RudiMediaConnector,
     RudiMediaConnectorParameter,
     RudiMediaConnectorParameterList,
-    RudiMediaConnector,
-    RudiChecksum,
+    RudiMediaFile,
+    RudiMediaService,
 )
 from rudi_node_write.utils.dict_utils import safe_get_key
-from rudi_node_write.utils.err import LiteralUnexpectedValueException
 
 RUDI_FILE = {
     "media_type": "FILE",
@@ -153,11 +152,14 @@ OK_CP = [
 ]
 
 
-def test_RudiMediaConnectorParameter_from_json():
+def test_RudiMediaConnectorParameter_from_json_ok():
     for cp_dict_json in OK_CP:
         cp_dict = RudiMediaConnectorParameter.from_json(cp_dict_json)
         assert isinstance(cp_dict, RudiMediaConnectorParameter)
         assert cp_dict.value_type == "STRING"
+
+
+def test_RudiMediaConnectorParameter_from_json_type_mismatch():
     for not_cp_dict in [
         {
             "key": "random key",
@@ -176,6 +178,9 @@ def test_RudiMediaConnectorParameter_from_json():
     ]:
         with pytest.raises(ValueError):
             RudiMediaConnectorParameter.from_json(not_cp_dict)
+
+
+def test_RudiMediaConnectorParameter_from_json_no_type():
     no_type_cp = RudiMediaConnectorParameter.from_json(
         {
             "key": "random key",
@@ -187,7 +192,10 @@ def test_RudiMediaConnectorParameter_from_json():
     assert no_type_cp.value_type == "STRING"
     assert no_type_cp.value == "{'e': 1}"
     assert no_type_cp.accepted_values == ["{'e': 1}"]
-    for val_type in ["int", "str", "dict"]:
+
+
+def test_RudiMediaConnectorParameter_from_json_dict_cast_fail():
+    for val_type in ["int", "list", "bool", "dict"]:
         not_cp_dict = {
             "key": "random key",
             "value": {"e": "value is a dict and will be stringified"},
@@ -195,22 +203,26 @@ def test_RudiMediaConnectorParameter_from_json():
             "usage": "test",
             "accepted_values": [{"e": "value is a dict and will be stringified"}],
         }
-        with pytest.raises(LiteralUnexpectedValueException):
+        with pytest.raises(ValueError):
             RudiMediaConnectorParameter.from_json(not_cp_dict)
 
+
+def test_RudiMediaConnectorParameter_from_json_list():
     cp_list = RudiMediaConnectorParameter.from_json(OK_CP)
     assert isinstance(cp_list, RudiMediaConnectorParameterList)
     assert len(cp_list) == 3
 
+
+def test_RudiMediaConnectorParameter_from_json_invalid_input():
     with pytest.raises(TypeError):
-        RudiMediaConnectorParameter.from_json(4)
+        RudiMediaConnectorParameter.from_json(4)  # type: ignore
 
 
 def test_RudiMediaConnectorParameterList():
     assert len(RudiMediaConnectorParameterList(RudiMediaConnectorParameter.from_json(OK_CP[0]))) == 1
     assert len(RudiMediaConnectorParameterList(RudiMediaConnectorParameter.from_json(OK_CP))) == 3
     with pytest.raises(TypeError):
-        RudiMediaConnectorParameterList(4)
+        RudiMediaConnectorParameterList(4)  # type: ignore
 
 
 def test_RudiMediaConnectorParameterList_to_json():
@@ -222,7 +234,7 @@ def test_RudiMediaConnectorParameterList_from_json():
     assert len(RudiMediaConnectorParameterList.from_json(OK_CP[0])) == 1
     assert len(RudiMediaConnectorParameterList.from_json(OK_CP)) == 3
     with pytest.raises(TypeError):
-        RudiMediaConnectorParameterList.from_json(4)
+        RudiMediaConnectorParameterList.from_json(4)  # type: ignore
 
 
 rudi_media_connector_json = {

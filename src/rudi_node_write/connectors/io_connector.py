@@ -1,13 +1,13 @@
-from http.client import HTTPSConnection, HTTPConnection
-from json import dumps, loads, JSONDecodeError
-from typing import Literal, get_args, BinaryIO, TextIO
+from http.client import HTTPConnection, HTTPSConnection
+from json import JSONDecodeError, dumps, loads
+from typing import BinaryIO, Literal, TextIO, get_args
 from urllib.parse import urlsplit
 
 from rudi_node_write.rudi_types.rudi_const import check_is_literal
 from rudi_node_write.rudi_types.serializable import Serializable
 from rudi_node_write.utils.dict_utils import safe_get_key
 from rudi_node_write.utils.err import HttpError
-from rudi_node_write.utils.log import log_d_if, log_e, log_d
+from rudi_node_write.utils.log import log_d, log_d_if, log_e
 from rudi_node_write.utils.str_utils import slash_join
 from rudi_node_write.utils.url_utils import get_response_cookies, url_encode_req_params
 
@@ -59,7 +59,7 @@ class Connector:
         self.should_log_response: bool = False
 
     def _set_url(self, server_url: str):
-        here = f"super.{self.class_name}._set_url"
+        # here = f"super.{self.class_name}._set_url"
         (scheme, netloc, path, query, fragment) = urlsplit(server_url)
         if scheme not in ("https", "http"):
             raise NotImplementedError(f"only http and https are supported, got '{scheme}'")

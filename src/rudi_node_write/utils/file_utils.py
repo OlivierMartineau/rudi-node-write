@@ -1,16 +1,96 @@
-from chardet import detect
 from hashlib import md5, sha256, sha512
-from json import load, dump
+from json import dump, load
 from os import makedirs, stat
 from os.path import exists
 from pathlib import Path
-from puremagic import magic_file
 from time import time
 from typing import Literal
 
+from chardet import detect
+from puremagic import magic_file
+
 from rudi_node_write.rudi_types.rudi_const import FileExtensions
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.log import log_d
+from rudi_node_write.utils.log import log_d, log_w
+
+EXTENSIONS = {
+    ".3gp": "video/3gpp",
+    ".3gpp": "video/3gpp",
+    ".7z": "application/x-7z-compressed",
+    ".aac": "audio/aac",
+    ".apng": "image/apng",
+    ".avi": "video/x-msvideo",
+    ".bin": "application/octet-stream",
+    ".bmp": "image/bmp",
+    ".bz": "application/x-bzip",
+    ".bz2": "application/x-bzip2",
+    ".cdf": "application/netcdf",
+    ".css": "text/css",
+    ".csv": "text/csv",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".epub": "application/epub+zip",
+    ".exe": "application/x-executable",
+    ".flif": "image/flif",
+    ".geojson": "application/geo+json",
+    ".gif": "image/gif",
+    ".gpkg": "application/geopackage+sqlite3",
+    ".gz": "application/gzip",
+    ".gzip": "application/gzip",
+    ".htm": "text/html",
+    ".html": "text/html",
+    ".ico": "image/vnd.microsoft.icon",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".js": "application/javascript",
+    ".json": "application/json",
+    ".jsonld": "application/ld+json",
+    ".m4a": "audio/m4a",
+    ".md": "text/markdown",
+    ".mkv": "video/x-matroska",
+    ".mng": "image/x-mng",
+    ".mov": "video/quicktime",
+    ".mp3": "audio/mpeg",
+    ".mp4": "video/mp4",
+    ".mpeg": "video/mpeg",
+    ".mpg": "video/mpeg",
+    ".nc": "application/netcdf",
+    ".odp": "application/vnd.oasis.opendocument.presentation",
+    ".ods": "application/vnd.oasis.opendocument.spreadsheet",
+    ".odt": "application/vnd.oasis.opendocument.text",
+    ".oga": "audio/ogg",
+    ".ogg": "audio/ogg",
+    ".ogv": "video/ogg",
+    ".otf": "font/otf",
+    ".pdf": "application/pdf",
+    ".php": "text/php",
+    ".png": "image/png",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".sql": "application/sql",
+    ".tar": "application/x-tar",
+    ".tar.bz": "application/x-bzip",
+    ".tar.bz2": "application/x-bzip2",
+    ".tar.gz": "application/gzip",
+    ".tgz": "application/gzip",
+    ".tif": "image/tiff",
+    ".tiff": "image/tiff",
+    ".toml": "application/toml",
+    ".ttf": "font/ttf",
+    ".txt": "text/plain",
+    ".wav": "audio/wav",
+    ".weba": "audio/webm",
+    ".webm": "video/webm",
+    ".webp": "image/webp",
+    ".wmv": "video/x-ms-wmv",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xml": "text/xml",
+    ".yaml": "text/x-yaml",
+    ".yml": "text/x-yaml",
+    ".zip": "application/zip",
+    ".zst": "application/zstd",
+}
 
 
 def is_dir(dir_local_path: str):
@@ -19,7 +99,7 @@ def is_dir(dir_local_path: str):
 
 def check_is_dir(dir_local_path: str, err_msg: str | None = None):
     if not is_dir(dir_local_path):
-        raise FileNotFoundError(err_msg if err_msg is not None else f"No such file: '{dir_local_path}'")
+        raise FileNotFoundError(err_msg if err_msg is not None else f"No such 'file': '{dir_local_path}'")
     return dir_local_path
 
 
@@ -41,7 +121,7 @@ def is_file(file_local_path: str):
 
 def check_is_file(file_local_path: str, err_msg: str | None = None):
     if not is_file(file_local_path):
-        raise FileNotFoundError(err_msg if err_msg is not None else f"No such file: '{file_local_path}'")
+        raise FileNotFoundError(err_msg if err_msg is not None else f"No such 'file': '{file_local_path}'")
     return file_local_path
 
 
@@ -76,20 +156,19 @@ def get_file_mime(file_local_path: str) -> str:
     :return:
     """
     here = "get_file_mime"
+    file_ext = get_file_extension(file_local_path)
+    if mime := EXTENSIONS.get(file_ext):
+        return mime
+
+    check_is_file(file_local_path)
     file_info = magic_file(file_local_path)
     if not file_info:  # pragma: no cover
-        log_d(here, "magic_file failed, no file_info for", file_local_path)
-        if get_file_extension(file_local_path) == ".csv":
-            return "text/csv"
+        log_w(here, "magic_file failed, no file_info for", file_local_path)
         return "application/octet-stream"
-    if get_file_extension(file_local_path) == ".geojson":
-        return "application/geo+json"
 
     mime_type = file_info[0].mime_type
     if not mime_type:
-        log_d(here, "file_info no mime_type", file_info)
-        if get_file_extension(file_local_path) == ".csv":
-            return "text/csv"
+        log_w(here, "file_info no mime_type", file_info)
         return "application/octet-stream"
 
     if mime_type == "application/x-gzip":  # pragma: no cover
@@ -100,16 +179,13 @@ def get_file_mime(file_local_path: str) -> str:
         else:
             log_d(here, "mime_type", mime_type)
             log_d(here, "file_local_path", file_local_path)
-            log_d(here, "file_extension", get_file_extension(file_local_path))
+            log_d(here, "file_extension", file_ext)
             return "application/vnd.ms-excel"
-
-    if mime_type.endswith("yaml"):
-        return "text/x-yaml"
 
     return mime_type
 
 
-def get_file_charset(file_local_path: str):
+def get_file_charset(file_local_path: str) -> str | None:
     """
     Returns the encoding of a file
     (Uses the library 'chardet': https://pypi.org/project/chardet)
@@ -124,7 +200,7 @@ def get_file_charset(file_local_path: str):
         return None
     with open(file_local_path, "rb") as file_stream:
         data = file_stream.read()
-        charset = detect(data, True)["encoding"]
+        charset = detect(data, prefer_superset=False)["encoding"]
         return charset
 
 
@@ -134,7 +210,7 @@ ACCEPTED_HASH_ALGOS = ("MD5", "SHA-256", "SHA256", "SHA-512", "SHA512")
 def get_file_hash(file_local_path: str, hash_algo: str = "md5") -> str:
     file_content = open(check_is_file(file_local_path), "rb").read()
     if not isinstance(hash_algo, str) or (upper_algo := hash_algo.upper()) not in ACCEPTED_HASH_ALGOS:
-        raise ValueError(f"Hash algorithm should be MD5, SHA-256 or SHA-512, got: '{hash_algo}'")
+        raise ValueError(f"Hash algorithm should be MD5, SHA-256 or SHA-512, 'got': '{hash_algo}'")
     if upper_algo == "MD5":
         return md5(file_content).hexdigest()
     if upper_algo in ("SHA256", "SHA-256"):
@@ -188,13 +264,15 @@ if __name__ == "__main__":  # pragma: no cover
     begin = time()
 
     test_file_dir = "../tests/_test_files/"
-    yaml_file_path = test_file_dir + "RUDI producer internal API - 1.3.0.yml"
+    yaml_file_path = test_file_dir + "RUDI node API.yml"
     right_path = test_file_dir + "unicorn.png"
     bin_file = test_file_dir + "WERTSTOFFE.m8s"
     tar_gz_file = test_file_dir + "rudi-node-read.tar.gz"
-    txt_file = test_file_dir + "RUDI producer internal API - 1.3.0.yml"
+    txt_file = test_file_dir + "RUDI node API.yml"
     csv_file = test_file_dir + "dummy.csv"
     wrong_path = test_file_dir + "toto"
+    pyproject_file = "../pyproject.toml"
+    readme_file = "../README.md"
     unicode_file_path = test_file_dir + "unicode_chars.txt"
     write_file(unicode_file_path, "tut0156êµîƒﬁÌπÏ“{ëôøÇ¡¶{µœ≤é≤")
 
@@ -216,36 +294,36 @@ if __name__ == "__main__":  # pragma: no cover
         tar_gz_file,
         txt_file,
         unicode_file_path,
+        pyproject_file,
+        readme_file,
     ]:
         if exists_file(file):
             log_d(
                 tests,
-                f"file: '{file}' ",
-                f"\n- exists_file: {exists_file(file)}",
-                f"\n- extension: {get_file_extension(file)}",
-                f"\n- size: {get_file_size(file)}",
-                f"\n- MIME: {get_file_mime(file)}",
-                f"\n- charset: {get_file_charset(file)}",
-                f"\n- MD5: {get_file_hash(file)}",
-                f"\n- info: {FileDetails(file)}",
+                f"'file': '{file}' ",
+                f"\n\t- exists_file: {exists_file(file)}",
+                f"\n\t- extension: {get_file_extension(file)}",
+                f"\n\t- size: {get_file_size(file)}",
+                f"\n\t- MIME: {get_file_mime(file)}",
+                f"\n\t- charset: {get_file_charset(file)}",
+                f"\n\t- MD5: {get_file_hash(file)}",
+                f"\n\t- SHA-256: {get_file_hash(file,'sha256')}",
+                f"\n\t- SHA-512: {get_file_hash(file,'sha512')}",
+                f"\n\t- info: {FileDetails(file)}",
             )
         else:
             log_d(
                 tests,
-                f"file: '{file}' ",
+                f"'file': '{file}' ",
                 f"\n- exists_file: {exists_file(file)}",
                 f"\n- extension: {get_file_extension(file)}",
             )
     # log_d(here, 'file info', get_file_info(wrong_path))
 
-    log_d(tests, "unicode file MD5 hash", get_file_hash(unicode_file_path))
-    log_d(tests, "unicode file SHA-256 hash", get_file_hash(unicode_file_path, "sha256"))
-    log_d(tests, "unicode file SHA-512 hash", get_file_hash(unicode_file_path, "sha-512"))
-
     log_d(tests, "yaml file hash MD5", get_file_hash(yaml_file_path))
     log_d(tests, "yaml file hash MD5", get_file_hash(yaml_file_path, "MD5"))
+    log_d(tests, "yaml file hash MD5", FileDetails(yaml_file_path).md5)
     log_d(tests, "yaml file hash SHA-256", get_file_hash(yaml_file_path, "sHa256"))
     log_d(tests, "yaml file hash SHA-512", get_file_hash(yaml_file_path, "shA-512"))
-    log_d(tests, "yaml file MD5 hash", FileDetails(unicode_file_path).md5)
 
     log_d(tests, "exec. time", time() - begin)

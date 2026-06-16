@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from json import dumps
 
 from rudi_node_write.utils.list_utils import clean_nones

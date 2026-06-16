@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=67.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "rudi-node-write"
 version = "1.3.8"
@@ -11,8 +7,8 @@ maintainers = [
 ]
 description = "Use the internal API of a RUDI Producer node"
 readme = "README.md"
-requires-python = ">=3.11"
 license-files = ["LICENCE.md"]
+requires-python = ">=3.11"
 license = "EUPL-1.2"
 classifiers = [
     "Programming Language :: Python :: 3.11",
@@ -37,6 +33,10 @@ Homepage = "https://github.com/OlivierMartineau/rudi-node-write"
 Documentation = "https://app.swaggerhub.com/apis/OlivierMartineau/RudiProducer-InternalAPI"
 Repository = "https://github.com/OlivierMartineau/rudi-node-write"
 
+[build-system]
+requires = ["setuptools>=67.0"]
+build-backend = "setuptools.build_meta"
+
 # ----- Tool: black
 [tool.black]
 line-length = 120
@@ -45,7 +45,7 @@ target-version = ['py311']
 # ----- Tool: commitizen
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.3.8"
+version = "1.4.1"
 version_files = ["pyproject.toml:version"]
 
 # ----- Tool: pytest

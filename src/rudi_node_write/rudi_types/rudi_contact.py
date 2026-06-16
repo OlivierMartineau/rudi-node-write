@@ -1,14 +1,14 @@
 from uuid import UUID
 
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key
+from rudi_node_write.utils.dict_utils import check_has_key, check_is_dict
 from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.str_utils import (
+    check_is_email,
+    check_is_string,
     check_is_string_or_none,
     check_is_uuid4,
-    check_is_email,
     uuid4_str,
-    check_is_string,
 )
 
 

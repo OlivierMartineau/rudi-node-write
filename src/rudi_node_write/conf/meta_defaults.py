@@ -6,7 +6,7 @@ from rudi_node_write.rudi_types.rudi_const import Language
 DEFAULT_LANG: Language = "fr"
 
 # Current version for RUDI Node metadata
-RUDI_API_VERSION: Final[str] = "1.4.0"
+RUDI_API_VERSION: Final[str] = "1.4.3"
 
 # Current version for ODS
 ODS_API_VERSION: str = "2.1"

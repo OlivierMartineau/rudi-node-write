@@ -1,8 +1,12 @@
 from rudi_node_write.rudi_types.serializable import Serializable
-from rudi_node_write.utils.dict_utils import check_is_dict, check_has_key, check_is_dict_or_none
+from rudi_node_write.utils.dict_utils import (
+    check_has_key,
+    check_is_dict,
+    check_is_dict_or_none,
+)
 from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.str_utils import check_is_string_or_none
-from rudi_node_write.utils.typing_utils import ensure_is_number, check_type
+from rudi_node_write.utils.typing_utils import check_type, ensure_is_number
 
 
 def check_is_latitude(latitude: float, alt_err_msg: str | None = None) -> float:

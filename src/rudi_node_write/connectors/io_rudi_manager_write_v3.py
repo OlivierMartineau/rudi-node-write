@@ -73,6 +73,9 @@ def ensure_url_startswith_catalog(url):
     return ensure_url_startswith(url, MGR_CATALOG_PREFIX)
 
 
+JWT = "eyJhbGciOiJFZERTQSJ9.eyJqdGkiOiI3YTc1NzY1OS0wZjJlLTQ1NjItYjc5Yy03OWZjM2IyMTQ5Y2UiLCJpYXQiOjE3NTkxNDczNDcsImV4cCI6MTc2MzI5NDU0Nywic3ViIjoicG9zdG1hbl9vbSIsImNsaWVudF9pZCI6Im9tIiwicmVxX210ZCI6ImFsbCIsInJlcV91cmwiOiJhbGwifQ.VQURaFDBBCCywv7Tsq0eQt_Kes6G1APzjm8awUJp2EXBrCTP5MzRupNISZ79gXhzajX-KH9jPDPxbg1FGzfxAA"
+
+
 class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
     """
     Every RUDI node has a UI module called "RUDI node manager", or "Manager" for shorts,
@@ -131,8 +134,8 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
 
                 self._cached_conf = conf
                 self._gen = 3
-            except:
-                raise NotImplementedError("This node version is not compatible with this object")
+            except Exception as e:
+                raise NotImplementedError("This node version is not compatible with this object") from e
         return self._cached_conf
 
     # ----------[ Basic API calls ]-------------------------------------------------------------------------------------
@@ -283,7 +286,7 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
 
     @property
     def _storage_jwt(self) -> str:
-        here = "_storage_jwt"
+        # here = "_storage_jwt"
         if is_jwt_expired(self._cached_storage_jwt):
             res = self.get_api(url="storage/jwt", headers=self._id_headers)
 
@@ -513,7 +516,7 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
         if not self._gen == 1:
             try:
                 list_medias = self.get_catalog_cached("media")
-            except:
+            except Exception:
                 log_w(here, f"Cannot acces /catalog/media on node {self.base_url}")
                 self._gen = 1
 
@@ -564,7 +567,7 @@ class RudiNodeManagerConnectorV3(RudiNodeManagerConnector):
 
     @property
     def used_organization_list(self) -> list[dict]:
-        here = "used_organization_list"
+        # here = "used_organization_list"
         used_orgs = {}
         for meta in self.metadata_list:
             producer_info: dict = safe_get_key(meta, "producer")  # type: ignore
@@ -1454,7 +1457,7 @@ if __name__ == "__main__":  # pragma: no cover
         "eeeeeeee-3233-4541-855e-55de7086b40f",
     ]
     text_file = "unicode_chars.txt"
-    yaml_file = "RUDI producer internal API - 1.3.0.yml"
+    yaml_file = "RUDI node API.yml"
     for i, f in enumerate([text_file, yaml_file]):
         try:
             upload_res = manager.post_local_file(slash_join(dwnld_dir, f), media_uuid[i])
