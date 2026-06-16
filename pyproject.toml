@@ -1,6 +1,6 @@
 [project]
 name = "rudi-node-write"
-version = "1.4.1"
+version = "1.4.2"
 authors = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
 maintainers = [
     { name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" },
@@ -45,7 +45,7 @@ target-version = ['py311']
 # ----- Tool: commitizen
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.4.1"
+version = "1.4.2"
 version_files = ["pyproject.toml:version"]
 
 # ----- Tool: pytest
