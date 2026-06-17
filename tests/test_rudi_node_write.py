@@ -1,9 +1,9 @@
 from time import time
+
 from rudi_node_write.connectors.rudi_node_auth import RudiNodeAuth
 from rudi_node_write.rudi_node_writer import RudiNodeWriter
 from rudi_node_write.rudi_types.rudi_org import RudiOrganization
 from rudi_node_write.utils.file_utils import read_json_file
-from rudi_node_write.utils.log import log_d
 from rudi_node_write.utils.str_utils import is_uuid_v4, slash_join
 
 begin = time()

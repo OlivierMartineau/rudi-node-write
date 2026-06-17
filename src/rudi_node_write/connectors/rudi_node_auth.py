@@ -2,6 +2,7 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 from rudi_node_write.rudi_types.serializable import Serializable
 from rudi_node_write.utils.jwt import is_base64_url, pad_b64_str
+from rudi_node_write.utils.log import log_d
 
 
 class RudiNodeAuth(Serializable):
@@ -16,12 +17,14 @@ class RudiNodeAuth(Serializable):
         - either a `b64url_auth` URL-safe Base64 encoded `usr:pwd` string
         - or with a couple of `usr` and `pwd` strings
         """
+        here = "RudiNodeAuth"
         if b64url_auth is not None:
             self._b64_auth = pad_b64_str(b64url_auth)
+            log_d(here, "self._b64_auth", self._b64_auth)
             if not is_base64_url(self._b64_auth):
                 raise ValueError("The input `b64url_auth` should be a urlsafe-base64 string.")
             try:
-                self.usr, self.pwd = urlsafe_b64decode(b64url_auth).decode("utf-8").split(":")
+                self.usr, self.pwd = urlsafe_b64decode(self._b64_auth).decode("utf-8").split(":")
             except Exception as e:
                 raise ValueError(
                     "The input `b64url_auth` should be a urlsafe-base64 string that encodes a `usr:pwd` string couple"

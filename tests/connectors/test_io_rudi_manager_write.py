@@ -1,6 +1,6 @@
 from rudi_node_write.connectors.io_rudi_manager_write import RudiNodeManagerConnector
 from rudi_node_write.connectors.rudi_node_auth import RudiNodeAuth
-from rudi_node_write.utils.file_utils import check_is_dir, check_is_file, read_json_file
+from rudi_node_write.utils.file_utils import check_is_dir, read_json_file
 from rudi_node_write.utils.str_utils import slash_join
 from rudi_node_write.utils.type_date import Date
 

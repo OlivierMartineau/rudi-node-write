@@ -67,3 +67,10 @@ def is_jwt_expired(jwt) -> bool:
     except ValueError as e:
         log_e("is_jwt_expired", f"this is not a JWT: '{jwt}'", e)
         return True
+
+
+if __name__ == "__main__":  # pragma: no cover
+    for arg in ["testing", "YrmFjpOshYMxl0tth73NhYmtl4GFzew"]:
+        print("* is_base64_url", f"'{arg}'? ->", is_base64_url(arg))
+        arg = pad_b64_str(arg)
+        print("* is_base64_url", f"'{arg}'? ->", is_base64_url(arg))
