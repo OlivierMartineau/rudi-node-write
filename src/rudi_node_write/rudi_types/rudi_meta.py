@@ -80,6 +80,7 @@ class RudiMetadata(Serializable):
         metadata_source: str | None = None,
         collection_tag: str | None = None,
         metadata_status: str | None = None,
+        extras: dict | list | None = None,
     ):
         # ---------- Mandatory parameters ----------
         self.global_id = check_is_uuid4(global_id)
@@ -127,6 +128,8 @@ class RudiMetadata(Serializable):
         self.collection_tag = check_is_string_or_none(collection_tag)
         self.metadata_source = check_is_string_or_none(metadata_source)
         self.metadata_status = check_is_literal_or_none(metadata_status, METADATA_STATUSES)
+
+        self.extras = extras if isinstance(extras, (dict, list)) else None
 
     @staticmethod
     def from_json(o: dict):
@@ -176,6 +179,7 @@ class RudiMetadata(Serializable):
         collection_tag = check_is_string_or_none(o.get("collection_tag"))
 
         metadata_status = check_is_literal_or_none(o.get("metadata_status"), METADATA_STATUSES)
+        extras = o.get("extras")
 
         return RudiMetadata(
             global_id=global_id,
@@ -199,6 +203,7 @@ class RudiMetadata(Serializable):
             geography=geography,
             collection_tag=collection_tag,
             metadata_status=metadata_status,
+            extras=extras,
         )
 
     def get_number_of_records(self) -> int | None:

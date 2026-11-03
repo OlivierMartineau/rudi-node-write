@@ -1,6 +1,6 @@
 [project]
 name = "rudi-node-write"
-version = "1.4.2"
+version = "1.5.0"
 authors = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
 maintainers = [
     { name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" },
@@ -11,8 +11,6 @@ license-files = ["LICENCE.md"]
 requires-python = ">=3.11"
 license = "EUPL-1.2"
 classifiers = [
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Natural Language :: English",
     "Operating System :: OS Independent",
 ]
@@ -25,8 +23,6 @@ keywords = [
     "open-data",
     "Univ. Rennes",
 ]
-dynamic = ["dependencies", "optional-dependencies"]
-# dependencies = ["beautifulsoup4", "chardet", "deepdiff", "puremagic"]
 
 [project.urls]
 Homepage = "https://github.com/OlivierMartineau/rudi-node-write"
@@ -45,7 +41,7 @@ target-version = ['py311']
 # ----- Tool: commitizen
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.4.4"
+version = "1.5.0"
 version_files = ["pyproject.toml:version"]
 
 # ----- Tool: pytest
@@ -80,3 +76,12 @@ reportUnusedImport = true
 reportImportCycles = true
 venvPath = "."
 venv = ".venv"
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",
+ "commitizen==4.8.3",
+ "uv-bump>=0.6.0",
+]
+build = ["twine==6.1.0"]
+test = ["ipykernel>=7.4.0", "pytest-cov>=7.1.0"]

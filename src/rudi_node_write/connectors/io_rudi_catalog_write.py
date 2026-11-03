@@ -216,7 +216,7 @@ class RudiNodeCatalogConnector(Connector):
     def _clean_cache(self) -> None:
         if self._data_cache is None:
             self._data_cache = {}
-        for cached_type in self._data_cache.keys():
+        for cached_type in self._data_cache:
             if time() - (self._data_cache[cached_type][_REFRESH_KEY]) > _DELAY_REFRESH_S:
                 self._data_cache[cached_type] = None
         # TODO: check the date of the last modified object on source node
@@ -305,9 +305,12 @@ class RudiNodeCatalogConnector(Connector):
         :param organization_id: the UUID v4 identifier of the organization
         :return: the deleted organization
         """
-        if is_uuid_v4(organization_id) and self.get_producer_with_id(organization_id):
-            if deleted_org := self.del_admin_api(f"organizations/{organization_id}"):
-                return RudiOrganization.from_json(deleted_org)
+        if (
+            is_uuid_v4(organization_id)
+            and self.get_producer_with_id(organization_id)
+            and (deleted_org := self.del_admin_api(f"organizations/{organization_id}"))
+        ):
+            return RudiOrganization.from_json(deleted_org)
         raise HttpErrorNotFound(f"No organization was found with id '{organization_id}'")
 
     def delete_org_with_name(self, organization_name: str) -> RudiOrganization:
