@@ -1,6 +1,6 @@
 [project]
 name = "rudi-node-write"
-version = "1.5.0"
+version = "1.5.1"
 authors = [{ name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" }]
 maintainers = [
     { name = "Olivier Martineau", email = "olivier.martineau@irisa.fr" },
@@ -8,7 +8,7 @@ maintainers = [
 description = "Use the internal API of a RUDI Producer node"
 readme = "README.md"
 license-files = ["LICENCE.md"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "EUPL-1.2"
 classifiers = [
     "Natural Language :: English",
@@ -23,6 +23,17 @@ keywords = [
     "open-data",
     "Univ. Rennes",
 ]
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "chardet>=7.7.0",
+    "deepdiff>=9.1.0",
+    "puremagic>=2.2.0",
+]
+
+[dependency-groups]
+dev = ["black==25.1.0", "commitizen==4.8.3", "uv-bump>=0.6.0"]
+build = ["twine==6.1.0"]
+test = ["ipykernel>=7.4.0", "pytest-cov>=7.1.0"]
 
 [project.urls]
 Homepage = "https://github.com/OlivierMartineau/rudi-node-write"
@@ -36,7 +47,7 @@ build-backend = "setuptools.build_meta"
 # ----- Tool: black
 [tool.black]
 line-length = 120
-target-version = ['py311']
+target-version = ['py312']
 
 # ----- Tool: commitizen
 [tool.commitizen]
@@ -61,15 +72,11 @@ addopts = [
 where = ["src"]
 include = ["rudi_node_write*"]
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
-optional-dependencies = { dev = { file = ["requirements-dev.txt"] } }
-
 # ----- Tool: pyright
 [tool.pyright]
 exclude = ["**/node_modules", "**/__pycache__"]
 include = ["src"]
-pythonVersion = "3.11"
+pythonVersion = "3.12"
 reportMissingImports = true
 reportDuplicateImport = true
 reportUnusedImport = true
@@ -77,11 +84,56 @@ reportImportCycles = true
 venvPath = "."
 venv = ".venv"
 
-[dependency-groups]
-dev = [
-    "black==25.1.0",
- "commitizen==4.8.3",
- "uv-bump>=0.6.0",
+# ----- Tool: tox
+# Single source of truth for the checks run locally and in CI:
+#   uv run tox                # all environments, serial
+#   uv run tox run-parallel   # what CI runs (only py312 writes coverage)
+#   uv run tox -e py312       # one environment
+[tool.tox]
+env_list = ["py312", "py313", "py314", "py315", "quality"]
+skip_missing_interpreters = false
+
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+dependency_groups = ["test"]
+# The interpreter envs exist to prove the suite runs on each version, so only
+# py312 (the dev interpreter, see [tool.tox.env.py312] below) instruments the
+# run. Coverage is off everywhere else: it triples the test time, and measuring
+# it under every version yields no extra information — the badge publishes a
+# single percentage, and the line counts genuinely differ between versions
+# (coverage.py's executable-line detection changed in 3.14), so comparing them
+# compares different denominators.
+commands = [["pytest", "-q", "-p", "no:cacheprovider", "--no-cov"]]
+
+# The one env that produces the coverage reports the badge reads. It writes the
+# shared reports/coverage.xml, which is safe precisely because no other env
+# writes one — the interpreter envs run in parallel.
+[tool.tox.env.py312]
+commands = [["pytest", "-q", "-p", "no:cacheprovider"]]
+
+[tool.tox.env.quality]
+base_python = ["python3.12"]
+dependency_groups = ["dev", "test"]
+commands = [
+    [
+        "ruff",
+        "check",
+        "--no-fix",
+    ],
+    [
+        "black",
+        "--check",
+        "--diff",
+        ".",
+    ],
+    [
+        "pyright",
+    ],
+    [
+        "bandit",
+        "-c",
+        "pyproject.toml",
+        "-r",
+        "src",
+    ],
 ]
-build = ["twine==6.1.0"]
-test = ["ipykernel>=7.4.0", "pytest-cov>=7.1.0"]
